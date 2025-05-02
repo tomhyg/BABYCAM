@@ -10,10 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  
 
   # Interface utilisateur
   cupertino_icons: ^1.0.5
-  fl_chart: ^0.55.0
+  fl_chart: ^0.65.0
   intl: ^0.18.0
   shimmer: ^2.0.0
   lottie: ^2.2.0
@@ -33,6 +35,7 @@ dependencies:
 
   # Services natifs
   flutter_local_notifications: ^13.0.0
+  flutter_local_notifications_linux: ^3.0.0+1  # Ajouter cette ligne
   permission_handler: ^10.2.0
   image_picker: ^0.8.6
   image_gallery_saver: ^1.7.1
