@@ -10,9 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  webview_flutter: ^3.0.0
   
-  
-
   # Interface utilisateur
   cupertino_icons: ^1.0.5
   fl_chart: ^0.65.0
@@ -34,8 +33,7 @@ dependencies:
   wifi_iot: ^0.3.18
 
   # Services natifs
-  flutter_local_notifications: ^13.0.0
-  flutter_local_notifications_linux: ^3.0.0+1  # Ajouter cette ligne
+  #flutter_local_notifications: ^13.0.0
   permission_handler: ^10.2.0
   image_picker: ^0.8.6
   image_gallery_saver: ^1.7.1
@@ -53,8 +51,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
-  flutter_launcher_icons: ^0.11.0
-  flutter_native_splash: ^2.2.16
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.3.8
 
 flutter:
   uses-material-design: true
@@ -70,7 +68,7 @@ flutter_icons:
   image_path: "assets/images/babycam_logo.png"
 
 flutter_native_splash:
-  color: "#6200EE"
+  color: "#F0EFFE"
   image: assets/images/babycam_logo.png
   android: true
   ios: true

@@ -6,11 +6,34 @@
 	<dict>
 		<key>Info.plist</key>
 		<data>
-		Xrj/Ci+Tc8g4pSbtDicNufrQ5yQ=
+		0Do2LQ9k5UCL3jUAyBOLfgMlhEE=
+		</data>
+		<key>flutter_native_splash_privacy.bundle/Info.plist</key>
+		<data>
+		R7vQf4SCaQMGIiiU+L14d2cYgTc=
+		</data>
+		<key>flutter_native_splash_privacy.bundle/PrivacyInfo.xcprivacy</key>
+		<data>
+		/LX0ZlwxwIAIhjZaDB8EiH5KpXA=
 		</data>
 	</dict>
 	<key>files2</key>
-	<dict/>
+	<dict>
+		<key>flutter_native_splash_privacy.bundle/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			X1iN4VKqgsldtOALPlrphm01skePYIsaW5VhArbLgWc=
+			</data>
+		</dict>
+		<key>flutter_native_splash_privacy.bundle/PrivacyInfo.xcprivacy</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			bS2g2NkwIn1CjB2TY7CtbjoS4sm2jFzilxWKdBL8jDE=
+			</data>
+		</dict>
+	</dict>
 	<key>rules</key>
 	<dict>
 		<key>^.*</key>

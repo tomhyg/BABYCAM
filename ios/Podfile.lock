@@ -7,9 +7,7 @@ PODS:
     - Flutter
     - ReachabilitySwift
   - Flutter (1.0.0)
-  - flutter_local_notifications (0.0.1):
-    - Flutter
-  - flutter_native_splash (0.0.1):
+  - flutter_native_splash (2.4.3):
     - Flutter
   - flutter_tts (0.0.1):
     - Flutter
@@ -34,6 +32,8 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
   - wifi_iot (0.0.1):
     - Flutter
 
@@ -42,7 +42,6 @@ DEPENDENCIES:
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
-  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
@@ -53,6 +52,7 @@ DEPENDENCIES:
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
   - wifi_iot (from `.symlinks/plugins/wifi_iot/ios`)
 
 SPEC REPOS:
@@ -68,8 +68,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   Flutter:
     :path: Flutter
-  flutter_local_notifications:
-    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_native_splash:
     :path: ".symlinks/plugins/flutter_native_splash/ios"
   flutter_tts:
@@ -90,6 +88,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
   wifi_iot:
     :path: ".symlinks/plugins/wifi_iot/ios"
 
@@ -98,8 +98,7 @@ SPEC CHECKSUMS:
   camera_avfoundation: be3be85408cd4126f250386828e9b1dfa40ab436
   connectivity_plus: 8443422d4c5a53dee0d50779ec5dbcda1071251e
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_local_notifications: ef18f0537538fcd18e9106b3ddc91cc10b4e579a
-  flutter_native_splash: 9e672d3818957718ee006a491730c09deeecace9
+  flutter_native_splash: 6cad9122ea0fad137d23137dd14b937f3e90b145
   flutter_tts: b88dbc8655d3dc961bc4a796e4e16a4cc1795833
   image_gallery_saver: 50ed0238a5f3747c340f4357c21e8c54b7ead376
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
@@ -110,6 +109,7 @@ SPEC CHECKSUMS:
   sensors_plus: 809f7e76b18439344b148b2730634b59d645f7eb
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  webview_flutter_wkwebview: 6e6160e04b1e85872253adc5322afe416d9cdddc
   wifi_iot: f645260a2be8608517b2a9bf4c39b98e97003acc
 
 PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5

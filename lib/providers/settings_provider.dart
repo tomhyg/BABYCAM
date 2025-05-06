@@ -93,12 +93,12 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // URL pour le flux vidéo MJPEG de l'ESP32-CAM
-  String get fullCameraStreamUrl => 'http://$_cameraIp:$_cameraPort/stream';
-  
-  // URL de base de l'API
-  String get baseUrl => 'http://$_cameraIp:$_apiPort';
-  
-  // URL complète de l'API (alias de baseUrl pour compatibilité)
-  String get fullApiUrl => baseUrl;
+  // URL pour le flux vidéo MJPEG
+String get fullCameraStreamUrl => 'http://$_cameraIp:8080/stream';
+
+// URL de base de l'API (sans /stream à la fin)
+String get baseUrl => 'http://$_cameraIp:8080';
+
+// URL complète de l'API (alias de baseUrl pour compatibilité)
+String get fullApiUrl => baseUrl;
 }

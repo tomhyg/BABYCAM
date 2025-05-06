@@ -6,8 +6,8 @@ class AppConfig {
   static const String appBuildNumber = '1';
   
   // API
-  static const int defaultApiPort = 80; // L'ESP32-CAM utilise le port 80 par défaut
-  static const String defaultApiIp = '172.21.2.30'; // Changez pour l'IP de votre ESP32-CAM
+  static const int defaultApiPort = 8080; // L'ESP32-CAM utilise le port 80 par défaut
+  static const String defaultApiIp = '192.168.1.95'; // Changez pour l'IP de votre ESP32-CAM
   
   // Préférences
   static const String prefOnboardingCompleted = 'onboarding_completed';

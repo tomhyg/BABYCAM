@@ -11,7 +11,7 @@ class CameraService {
   Future<String> getStreamUrl() async {
     try {
       // Pour l'ESP32-CAM avec le code d'exemple, l'URL du stream est:
-      return "$baseUrl/mjpeg/1";
+      return "$baseUrl";
     } catch (e) {
       throw Exception('Network error: $e');
     }

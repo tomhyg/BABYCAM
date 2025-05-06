@@ -167,25 +167,25 @@ class HomeContent extends StatelessWidget {
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
                 children: [
-                  SensorCardWidget(
+                  SensorCardModern(
                     title: 'Température',
                     value: '${sensorProvider.currentData!.temperature.toStringAsFixed(1)}°C',
                     icon: Icons.thermostat,
                     color: Colors.orange,
                   ),
-                  SensorCardWidget(
+                  SensorCardModern(
                     title: 'Humidité',
                     value: '${sensorProvider.currentData!.humidity.toStringAsFixed(0)}%',
                     icon: Icons.water_drop,
                     color: Colors.blue,
                   ),
-                  SensorCardWidget(
+                  SensorCardModern(
                     title: 'Qualité d\'air',
                     value: sensorProvider.currentData!.airQuality.toStringAsFixed(0),
                     icon: Icons.air,
                     color: Colors.green,
                   ),
-                  SensorCardWidget(
+                  SensorCardModern(
                     title: 'Luminosité',
                     value: '${sensorProvider.currentData!.lightLevel.toStringAsFixed(0)} lux',
                     icon: Icons.light_mode,

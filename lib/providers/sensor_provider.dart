@@ -26,6 +26,16 @@ class SensorProvider with ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error loading current sensor data: $e');
+      // Facultatif : Ajouter des données simulées en cas d'erreur
+      _currentData = SensorData(
+        timestamp: DateTime.now(),
+        temperature: 22.5,
+        humidity: 45.0,
+        airQuality: 92.0,
+        pressure: 1013.0,
+        lightLevel: 220.0,
+      );
+      notifyListeners();
     }
   }
 
@@ -37,6 +47,20 @@ class SensorProvider with ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error loading historical sensor data: $e');
+      // Facultatif : Ajouter des données simulées en cas d'erreur
+      final now = DateTime.now();
+      _historicalData = List.generate(
+        24,
+        (index) => SensorData(
+          timestamp: now.subtract(Duration(hours: index)),
+          temperature: 22.0 + (index % 5),
+          humidity: 45.0 + (index % 10),
+          airQuality: 90.0 + (index % 8),
+          pressure: 1010.0 + (index % 10),
+          lightLevel: 200.0 + (index % 50),
+        ),
+      );
+      notifyListeners();
     }
   }
 
@@ -49,9 +73,15 @@ class SensorProvider with ChangeNotifier {
         },
         onError: (error) {
           debugPrint('Error in sensor data stream: $error');
+          // Optionnel : Gérer l'erreur de stream en créant des données simulées
         },
       );
     }
+  }
+
+  // Méthode pour rafraîchir manuellement les données
+  Future<void> refreshData() async {
+    await _loadCurrentData();
   }
 
   @override

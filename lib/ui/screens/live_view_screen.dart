@@ -11,6 +11,10 @@ class LiveViewScreen extends StatelessWidget {
     final cameraProvider = Provider.of<CameraProvider>(context);
     final audioProvider = Provider.of<AudioProvider>(context);
     
+    // Débogage
+    print("Stream URL: ${cameraProvider.streamUrl}");
+    print("Is Streaming: ${cameraProvider.isStreaming}");
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vue en direct'),
@@ -51,29 +55,33 @@ class LiveViewScreen extends StatelessWidget {
                 children: [
                   if (cameraProvider.isStreaming && cameraProvider.streamUrl.isNotEmpty)
                     Image.network(
-                      cameraProvider.streamUrl,
+                      "http://192.168.1.95:8080/stream", // URL directe au lieu de cameraProvider.streamUrl
                       fit: BoxFit.contain,
                       gaplessPlayback: true,  // Important pour un streaming fluide
-                      //cacheWidth: 0,  // Désactive le cache pour un stream en direct
-                      //cacheHeight: 0,
+                      // Suppression des paramètres cacheWidth et cacheHeight
                       headers: const {'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5, max=1000'},
-                      errorBuilder: (_, __, ___) => const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.error_outline, 
-                              size: 64, 
-                              color: Colors.white54
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              'Impossible de charger le flux vidéo',
-                              style: TextStyle(color: Colors.white54, fontSize: 16),
-                            ),
-                          ],
-                        ),
-                      ),
+                      errorBuilder: (context, error, stackTrace) {
+                        print("Erreur de chargement du flux: $error");
+                        print("Stack trace: $stackTrace");
+                        return const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min, // Limite la taille de la colonne
+                            children: [
+                              Icon(
+                                Icons.error_outline, 
+                                size: 64, 
+                                color: Colors.white54
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Impossible de charger le flux vidéo',
+                                style: TextStyle(color: Colors.white54, fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return const Center(
@@ -87,6 +95,7 @@ class LiveViewScreen extends StatelessWidget {
                     const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min, // Limite la taille de la colonne
                         children: [
                           Icon(
                             Icons.videocam_off, 
@@ -129,9 +138,10 @@ class LiveViewScreen extends StatelessWidget {
           // Contrôles
           Expanded(
             flex: 2,
-            child: Padding(
+            child: SingleChildScrollView( // Ajout de SingleChildScrollView
               padding: const EdgeInsets.all(16.0),
               child: Column(
+                mainAxisSize: MainAxisSize.min, // Limite la taille de la colonne
                 children: [
                   // Contrôle veilleuse
                   Card(
@@ -142,6 +152,7 @@ class LiveViewScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min, // Limite la taille de la colonne
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,6 +205,7 @@ class LiveViewScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min, // Limite la taille de la colonne
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
