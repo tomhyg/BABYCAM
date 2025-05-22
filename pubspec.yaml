@@ -41,6 +41,9 @@ dependencies:
   flutter_tts: ^3.6.2
   camera: ^0.10.1
   sensors_plus: ^2.0.1
+  flutter_sound: ^9.2.13
+  record: ^4.4.4
+  flutter_webrtc: ^0.9.36
 
   # Utilitaires
   path: ^1.8.2

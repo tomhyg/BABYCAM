@@ -6,7 +6,7 @@ import 'sensor_dashboard_screen.dart';
 import 'settings_screen.dart';
 import '../../providers/camera_provider.dart';
 import '../../providers/sensor_provider.dart';
-import '../widgets/sensor_card_widget.dart';
+import '../widgets/sensor_card_modern.dart';
 import '../theme/app_text_styles.dart';
 import 'statistics_screen.dart';
 
@@ -130,6 +130,41 @@ class HomeContent extends StatelessWidget {
                               style: AppTextStyles.subtitle1,
                             ),
                           ),
+                          // Bouton d'interphone
+                          IconButton(
+                            icon: Icon(
+                              cameraProvider.isIntercomActive 
+                                  ? Icons.mic_off 
+                                  : Icons.mic,
+                              color: cameraProvider.isIntercomActive 
+                                  ? Theme.of(context).colorScheme.primary 
+                                  : null,
+                            ),
+                            tooltip: 'Interphone',
+                            onPressed: () async {
+                              try {
+                                await cameraProvider.toggleIntercom();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      cameraProvider.isIntercomActive 
+                                          ? 'Interphone activé' 
+                                          : 'Interphone désactivé'
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Erreur: $e'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          // Bouton de lecture/pause
                           ElevatedButton.icon(
                             onPressed: () {
                               if (cameraProvider.isStreaming) {

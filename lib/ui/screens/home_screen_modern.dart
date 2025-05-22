@@ -123,7 +123,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                     ),
                     const SizedBox(height: 24),
                     
-                    // Affichage du flux vidéo (preview)
+                    // Affichage du flux vidéo (preview) avec optimisation
                     GestureDetector(
                       onTap: () {
                         // Ouvrir l'écran de vue en direct
@@ -149,17 +149,51 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                             ),
                           ],
                         ),
+                        clipBehavior: Clip.hardEdge, // Important pour éviter le débordement
                         child: Stack(
                           children: [
-                            // Flux vidéo avec WebView
+                            // Flux vidéo avec WebView optimisé
                             ClipRRect(
                               borderRadius: BorderRadius.circular(16),
-                              child: cameraProvider.isStreaming && cameraProvider.streamUrl.isNotEmpty
+                              child: cameraProvider.isStreaming
                                 ? WebView(
-                                    initialUrl: 'http://192.168.1.95:8080/stream',
+                                    initialUrl: 'about:blank',
                                     javascriptMode: JavascriptMode.unrestricted,
-                                    gestureNavigationEnabled: false,
                                     backgroundColor: Colors.black,
+                                    onWebViewCreated: (WebViewController controller) {
+                                      // Utiliser HTML pour contrôler le format d'affichage
+                                      controller.loadHtmlString('''
+                                        <!DOCTYPE html>
+                                        <html>
+                                        <head>
+                                          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                          <style>
+                                            body { 
+                                              margin: 0; 
+                                              padding: 0; 
+                                              background-color: black; 
+                                              overflow: hidden;
+                                              width: 100vw;
+                                              height: 100vh;
+                                              display: flex;
+                                              align-items: center;
+                                              justify-content: center;
+                                            }
+                                            img { 
+                                              min-width: 100%; 
+                                              min-height: 100%; 
+                                              width: auto;
+                                              height: auto;
+                                              object-fit: cover; /* Pour remplir tout l'espace */
+                                            }
+                                          </style>
+                                        </head>
+                                        <body>
+                                          <img src="http://192.168.1.95:8080/stream" />
+                                        </body>
+                                        </html>
+                                      ''');
+                                    },
                                     onWebResourceError: (error) {
                                       print("Erreur WebView: ${error.description}");
                                     },
@@ -259,69 +293,95 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                       ),
                     ),
                     
-                    // Contrôles rapides sous le flux vidéo
+                    // Contrôles rapides sous le flux vidéo (sans mode nuit)
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildQuickActionButton(
-                              icon: Icons.photo_camera,
-                              label: 'Capture',
-                              onTap: () {
-                                cameraProvider.captureSnapshot();
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center, // Centre les boutons
+                        children: [
+                          _buildQuickActionButton(
+                            icon: Icons.photo_camera,
+                            label: 'Capture',
+                            onTap: () {
+                              cameraProvider.captureSnapshot();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Capture d\'écran prise'),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  backgroundColor: colorScheme.primary,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 24), // Plus d'espace entre les boutons
+                                              // Nouveau bouton d'interphone
+                          _buildQuickActionButton(
+                            icon: cameraProvider.isIntercomActive ? Icons.mic_off : Icons.mic,
+                            label: 'Interphone',
+                            isActive: cameraProvider.isIntercomActive,
+                            onTap: () async {
+                              try {
+                                await cameraProvider.toggleIntercom();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: const Text('Capture d\'écran prise'),
+                                    content: Text(
+                                      cameraProvider.isIntercomActive 
+                                          ? 'Interphone activé' 
+                                          : 'Interphone désactivé'
+                                    ),
                                     behavior: SnackBarBehavior.floating,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    backgroundColor: colorScheme.primary,
+                                    duration: const Duration(seconds: 2),
                                   ),
                                 );
-                              },
-                            ),
-                            const SizedBox(width: 12),
-                            _buildQuickActionButton(
-                              icon: cameraProvider.isNightLightOn ? Icons.nightlight_round : Icons.nightlight_outlined,
-                              label: 'Veilleuse',
-                              isActive: cameraProvider.isNightLightOn,
-                              onTap: () {
-                                cameraProvider.toggleNightLight(!cameraProvider.isNightLightOn);
-                              },
-                            ),
-                            const SizedBox(width: 12),
-                            _buildQuickActionButton(
-                              icon: audioProvider.isPlaying ? Icons.music_note : Icons.music_note_outlined,
-                              label: 'Berceuse',
-                              isActive: audioProvider.isPlaying,
-                              onTap: () {
-                                if (audioProvider.isPlaying) {
-                                  audioProvider.stopLullaby();
-                                } else if (audioProvider.currentLullaby != null) {
-                                  audioProvider.playLullaby(audioProvider.currentLullaby!);
-                                } else if (audioProvider.availableLullabies.isNotEmpty) {
-                                  audioProvider.playLullaby(audioProvider.availableLullabies.first);
-                                }
-                              },
-                            ),
-                            const SizedBox(width: 12),
-                            _buildQuickActionButton(
-                              icon: cameraProvider.settings.nightVisionEnabled ? Icons.remove_red_eye : Icons.remove_red_eye_outlined,
-                              label: 'Vision nuit',
-                              isActive: cameraProvider.settings.nightVisionEnabled,
-                              onTap: () {
-                                final newSettings = cameraProvider.settings.copyWith(
-                                  nightVisionEnabled: !cameraProvider.settings.nightVisionEnabled,
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Erreur: $e'),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
                                 );
-                                cameraProvider.updateSettings(newSettings);
-                              },
-                            ),
-                          ],
-                        ),
+                              }
+                            },
+                          ),
+                          const SizedBox(width: 24),
+                          
+
+                          
+                          _buildQuickActionButton(
+                            icon: cameraProvider.isNightLightOn ? Icons.lightbulb : Icons.lightbulb_outline,
+                            label: 'Veilleuse',
+                            isActive: cameraProvider.isNightLightOn,
+                            onTap: () {
+                              cameraProvider.toggleNightLight(!cameraProvider.isNightLightOn);
+                            },
+                          ),
+                          const SizedBox(width: 48), // Plus d'espace entre les boutons
+                          
+                          _buildQuickActionButton(
+                            icon: audioProvider.isPlaying ? Icons.music_note : Icons.music_note_outlined,
+                            label: 'Berceuse',
+                            isActive: audioProvider.isPlaying,
+                            onTap: () {
+                              if (audioProvider.isPlaying) {
+                                audioProvider.stopLullaby();
+                              } else if (audioProvider.currentLullaby != null) {
+                                audioProvider.playLullaby(audioProvider.currentLullaby!);
+                              } else if (audioProvider.availableLullabies.isNotEmpty) {
+                                audioProvider.playLullaby(audioProvider.availableLullabies.first);
+                              }
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   ],

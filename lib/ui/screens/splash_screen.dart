@@ -6,6 +6,7 @@ import '../../providers/sensor_provider.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/ai_analysis_provider.dart';
+import '../../providers/intercom_provider.dart';
 import 'home_screen.dart';
 import 'onboarding_screen.dart';
 import '../theme/app_colors.dart';
@@ -53,6 +54,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     
     final aiAnalysisProvider = Provider.of<AIAnalysisProvider>(context, listen: false);
     aiAnalysisProvider.initialize(settingsProvider.baseUrl);
+    
+    // Initialisation de l'interphone
+    final intercomProvider = Provider.of<IntercomProvider>(context, listen: false);
+    intercomProvider.initialize(settingsProvider.cameraIp, int.parse(settingsProvider.apiPort));
     
     // Attendre un peu pour montrer le splash screen
     await Future.delayed(const Duration(seconds: 3));
