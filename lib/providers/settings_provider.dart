@@ -1,22 +1,22 @@
-// lib/providers/settings_provider.dart (mise à jour partielle)
+// lib/providers/settings_provider.dart
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/app_config.dart';
-import '../ui/theme/app_colors.dart';  // ✅ Import ajouté
+import '../ui/theme/app_theme_manager.dart';
 
 class SettingsProvider with ChangeNotifier {
   SharedPreferences? _prefs;
   String _cameraIp = AppConfig.defaultApiIp;
   String _apiPort = AppConfig.defaultApiPort.toString();
-  String _cameraPort = '80'; // Port par défaut de l'ESP32-CAM
+  String _cameraPort = '80';
   bool _darkMode = false;
   bool _notificationsEnabled = true;
   String _language = 'fr';
   bool _onboardingCompleted = false;
   String? _wifiSsid;
   String? _wifiPassword;
-  String _colorScheme = 'baby';  // ✅ Ajouté
+  ColorSchemeType _colorScheme = ColorSchemeType.original; // Par défaut Original
 
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
@@ -30,77 +30,88 @@ class SettingsProvider with ChangeNotifier {
     _language = _prefs?.getString(AppConfig.prefLanguage) ?? 'fr';
     _wifiSsid = _prefs?.getString(AppConfig.prefWifiSsid);
     _wifiPassword = _prefs?.getString(AppConfig.prefWifiPassword);
-    _colorScheme = _prefs?.getString('color_scheme') ?? 'baby';  // ✅ Ajouté
+    
+    // Charger le thème de couleur
+    String colorSchemeString = _prefs?.getString('color_scheme') ?? 'original';
+    _colorScheme = AppThemeManager.getColorSchemeFromString(colorSchemeString);
     
     notifyListeners();
   }
 
+  // Getters
   bool get onboardingCompleted => _onboardingCompleted;
-  
+  String get cameraIp => _cameraIp;
+  String get apiPort => _apiPort;
+  String get cameraPort => _cameraPort;
+  bool get darkMode => _darkMode;
+  bool get notificationsEnabled => _notificationsEnabled;
+  String get language => _language;
+  ColorSchemeType get colorScheme => _colorScheme;
+  String? get wifiSsid => _wifiSsid;
+  String? get wifiPassword => _wifiPassword;
+
+  // Méthodes pour les thèmes
+  String get currentThemeName => AppThemeManager.getThemeName(_colorScheme);
+  String get currentThemeDescription => AppThemeManager.getThemeDescription(_colorScheme);
+  IconData get currentThemeIcon => AppThemeManager.getThemeIcon(_colorScheme);
+  List<Color> get currentColors => AppThemeManager.getThemeColors(_colorScheme);
+
+  // Setters
   Future<void> setOnboardingCompleted(bool value) async {
     _onboardingCompleted = value;
     await _prefs?.setBool(AppConfig.prefOnboardingCompleted, value);
     notifyListeners();
   }
 
-  String get cameraIp => _cameraIp;
   set cameraIp(String value) {
     _cameraIp = value;
     _prefs?.setString(AppConfig.prefCameraIp, value);
     notifyListeners();
   }
 
-  String get apiPort => _apiPort;
   set apiPort(String value) {
     _apiPort = value;
     _prefs?.setString(AppConfig.prefPort, value);
     notifyListeners();
   }
 
-  String get cameraPort => _cameraPort;
   set cameraPort(String value) {
     _cameraPort = value;
     _prefs?.setString(AppConfig.prefCameraPort, value);
     notifyListeners();
   }
 
-  bool get darkMode => _darkMode;
   set darkMode(bool value) {
     _darkMode = value;
     _prefs?.setBool(AppConfig.prefDarkMode, value);
     notifyListeners();
   }
 
-  bool get notificationsEnabled => _notificationsEnabled;
   set notificationsEnabled(bool value) {
     _notificationsEnabled = value;
     _prefs?.setBool(AppConfig.prefNotificationsEnabled, value);
     notifyListeners();
   }
 
-  String get language => _language;
   set language(String value) {
     _language = value;
     _prefs?.setString(AppConfig.prefLanguage, value);
     notifyListeners();
   }
 
-  // ✅ Nouvelles propriétés ajoutées
-  String get colorScheme => _colorScheme;
-  
-  Future<void> setColorScheme(String value) async {
+  Future<void> setColorScheme(ColorSchemeType value) async {
     _colorScheme = value;
-    await _prefs?.setString('color_scheme', value);
+    String stringValue = AppThemeManager.getStringFromColorScheme(value);
+    await _prefs?.setString('color_scheme', stringValue);
     notifyListeners();
   }
 
-  Map<String, Color> get currentColors => AppColors.getColorScheme(_colorScheme);  // ✅ Ajouté
-  String get currentThemeName => AppColors.getThemeName(_colorScheme);  // ✅ Ajouté
-  String get currentThemeDescription => AppColors.getThemeDescription(_colorScheme);  // ✅ Ajouté
+  // Version string pour compatibilité
+  Future<void> setColorSchemeFromString(String value) async {
+    ColorSchemeType scheme = AppThemeManager.getColorSchemeFromString(value);
+    await setColorScheme(scheme);
+  }
 
-  String? get wifiSsid => _wifiSsid;
-  String? get wifiPassword => _wifiPassword;
-  
   Future<void> saveWifiCredentials(String ssid, String password) async {
     _wifiSsid = ssid;
     _wifiPassword = password;
@@ -109,12 +120,16 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // URL pour le flux vidéo MJPEG
+  // URLs
   String get fullCameraStreamUrl => 'http://$_cameraIp:8080/stream';
-
-  // URL de base de l'API (sans /stream à la fin)
   String get baseUrl => 'http://$_cameraIp:8080';
-
-  // URL complète de l'API (alias de baseUrl pour compatibilité)
   String get fullApiUrl => baseUrl;
+
+  // Méthode pour obtenir le thème complet
+  ThemeData getThemeData() {
+    return AppThemeManager.createTheme(
+      colorScheme: _colorScheme,
+      isDarkMode: _darkMode,
+    );
+  }
 }

@@ -1,3 +1,5 @@
+// lib/providers/monitoring_provider.dart
+
 import 'package:flutter/material.dart';
 import '../core/models/monitoring_state.dart';
 import '../core/services/audio_service.dart';
@@ -12,8 +14,8 @@ class MonitoringProvider with ChangeNotifier {
   bool get isActive => _currentState != MonitoringState.inactive;
   bool get isTransitioning => _isTransitioning;
   
-  // Getters de commodité pour l'UI
-  String get currentLabel => _currentState.label;
+  // Getters de commodité pour l'UI - ✅ Corrigés
+  String get currentLabel => _currentState.displayName;  // ✅ Changé de .label à .displayName
   IconData get currentIcon => _currentState.icon;
   Color get currentColor => _currentState.color;
 
@@ -35,14 +37,14 @@ class MonitoringProvider with ChangeNotifier {
     final nextIndex = (currentIndex + 1) % states.length;
     final nextState = states[nextIndex];
     
-    debugPrint('🎧 Cycle: ${_currentState.label} → ${nextState.label}');
+    debugPrint('🎧 Cycle: ${_currentState.displayName} → ${nextState.displayName}');  // ✅ Corrigé
     await setMonitoringState(nextState);
   }
 
   /// Définit un état de monitoring spécifique
   Future<void> setMonitoringState(MonitoringState state) async {
     if (_currentState == state) {
-      debugPrint('🎧 État déjà actif: ${state.label}');
+      debugPrint('🎧 État déjà actif: ${state.displayName}');  // ✅ Corrigé
       return;
     }
 
@@ -63,7 +65,7 @@ class MonitoringProvider with ChangeNotifier {
       
       _currentState = state;
       
-      debugPrint('✅ État monitoring changé: ${oldState.label} → ${state.label}');
+      debugPrint('✅ État monitoring changé: ${oldState.displayName} → ${state.displayName}');  // ✅ Corrigé
       
       // Feedback haptique pour améliorer l'UX
       _triggerHapticFeedback(state);
@@ -185,10 +187,10 @@ class MonitoringProvider with ChangeNotifier {
     await setMonitoringState(MonitoringState.inactive);
   }
 
-  /// Méthode de debug pour afficher l'état
+  /// Méthode de debug pour afficher l'état - ✅ Corrigée
   void debugPrintState() {
     debugPrint('🎧 État MonitoringProvider:');
-    debugPrint('   État actuel: ${_currentState.label}');
+    debugPrint('   État actuel: ${_currentState.displayName}');  // ✅ Corrigé
     debugPrint('   Est actif: $isActive');
     debugPrint('   Écoute: $isListening');
     debugPrint('   Parler: $isTalking');

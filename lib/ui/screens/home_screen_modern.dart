@@ -1,16 +1,18 @@
-// lib/ui/screens/home_screen_modern.dart
+// lib/ui/screens/home_screen_modern.dart (mis à jour)
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme_manager.dart';
 import '../../providers/camera_provider.dart';
 import '../../providers/sensor_provider.dart';
 import '../../providers/audio_provider.dart';
+import '../../providers/settings_provider.dart';
 import 'live_view_screen.dart';
 import 'events_screen.dart';
 import 'sensor_dashboard_screen.dart';
 import 'statistics_screen.dart';
-// import '../widgets/animated_gradient_background.dart';  // ❌ Temporairement commenté
+import 'settings_screen.dart';
 import '../widgets/sensor_card_modern.dart';
 
 class HomeScreenModern extends StatefulWidget {
@@ -22,7 +24,6 @@ class HomeScreenModern extends StatefulWidget {
 
 class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  bool _isExpanded = false;
 
   @override
   void initState() {
@@ -44,21 +45,25 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
     final cameraProvider = Provider.of<CameraProvider>(context);
     final sensorProvider = Provider.of<SensorProvider>(context);
     final audioProvider = Provider.of<AudioProvider>(context);
+    final settingsProvider = Provider.of<SettingsProvider>(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    
+    // Obtenir les couleurs spécifiques au thème actuel
+    final currentTheme = settingsProvider.colorScheme;
+    final temperatureColor = AppThemeManager.getTemperatureColor(currentTheme);
+    final humidityColor = AppThemeManager.getHumidityColor(currentTheme);
+    final airQualityColor = AppThemeManager.getAirQualityColor(currentTheme);
+    final lightLevelColor = AppThemeManager.getLightLevelColor(currentTheme);
     
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            // En-tête avec gradient simple (sans AnimatedGradientBackground)
+            // En-tête avec gradient adaptatif
             Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [AppColors.primary, AppColors.primaryVariant],
-                ),
+              decoration: BoxDecoration(
+                gradient: _getHeaderGradient(currentTheme),
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
@@ -124,11 +129,28 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                             },
                           ),
                         ),
+                        const SizedBox(width: 8),
+                        // Bouton paramètres
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 24),
                     
-                    // Affichage du flux vidéo (preview) - Simplifié
+                    // Flux vidéo
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -155,7 +177,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                         ),
                         child: Stack(
                           children: [
-                            // Flux vidéo simplifié
+                            // Flux vidéo
                             ClipRRect(
                               borderRadius: BorderRadius.circular(16),
                               child: cameraProvider.isStreaming && cameraProvider.streamUrl.isNotEmpty
@@ -209,7 +231,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                   ),
                             ),
                             
-                            // Icône de caméra en haut à droite
+                            // Statut en haut à droite
                             Positioned(
                               top: 12,
                               right: 12,
@@ -240,7 +262,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                               ),
                             ),
                             
-                            // Bouton de lecture/pause en bas à droite
+                            // Bouton play/pause
                             Positioned(
                               bottom: 12,
                               right: 12,
@@ -282,69 +304,63 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                       ),
                     ),
                     
-                    // Contrôles rapides sous le flux vidéo
+                    // Contrôles rapides avec style moderne (boutons ronds)
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildQuickActionButton(
-                              icon: Icons.photo_camera,
-                              label: 'Capture',
-                              onTap: () {
-                                cameraProvider.captureSnapshot();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Capture d\'écran prise'),
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    backgroundColor: colorScheme.primary,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildModernQuickActionButton(
+                            icon: Icons.photo_camera,
+                            label: 'Capture',
+                            onTap: () {
+                              cameraProvider.captureSnapshot();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Capture d\'écran prise'),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                );
-                              },
-                            ),
-                            const SizedBox(width: 12),
-                            _buildQuickActionButton(
-                              icon: cameraProvider.isNightLightOn ? Icons.nightlight_round : Icons.nightlight_outlined,
-                              label: 'Veilleuse',
-                              isActive: cameraProvider.isNightLightOn,
-                              onTap: () {
-                                cameraProvider.toggleNightLight(!cameraProvider.isNightLightOn);
-                              },
-                            ),
-                            const SizedBox(width: 12),
-                            _buildQuickActionButton(
-                              icon: audioProvider.isPlaying ? Icons.music_note : Icons.music_note_outlined,
-                              label: 'Berceuse',
-                              isActive: audioProvider.isPlaying,
-                              onTap: () {
-                                if (audioProvider.isPlaying) {
-                                  audioProvider.stopLullaby();
-                                } else if (audioProvider.currentLullaby != null) {
-                                  audioProvider.playLullaby(audioProvider.currentLullaby!);
-                                } else if (audioProvider.availableLullabies.isNotEmpty) {
-                                  audioProvider.playLullaby(audioProvider.availableLullabies.first);
-                                }
-                              },
-                            ),
-                            const SizedBox(width: 12),
-                            _buildQuickActionButton(
-                              icon: cameraProvider.settings.nightVisionEnabled ? Icons.remove_red_eye : Icons.remove_red_eye_outlined,
-                              label: 'Vision nuit',
-                              isActive: cameraProvider.settings.nightVisionEnabled,
-                              onTap: () {
-                                final newSettings = cameraProvider.settings.copyWith(
-                                  nightVisionEnabled: !cameraProvider.settings.nightVisionEnabled,
-                                );
-                                cameraProvider.updateSettings(newSettings);
-                              },
-                            ),
-                          ],
-                        ),
+                                  backgroundColor: colorScheme.primary,
+                                ),
+                              );
+                            },
+                          ),
+                          _buildModernQuickActionButton(
+                            icon: cameraProvider.isNightLightOn ? Icons.nightlight_round : Icons.nightlight_outlined,
+                            label: 'Veilleuse',
+                            isActive: cameraProvider.isNightLightOn,
+                            onTap: () {
+                              cameraProvider.toggleNightLight(!cameraProvider.isNightLightOn);
+                            },
+                          ),
+                          _buildModernQuickActionButton(
+                            icon: audioProvider.isPlaying ? Icons.music_note : Icons.music_note_outlined,
+                            label: 'Berceuse',
+                            isActive: audioProvider.isPlaying,
+                            onTap: () {
+                              if (audioProvider.isPlaying) {
+                                audioProvider.stopLullaby();
+                              } else if (audioProvider.currentLullaby != null) {
+                                audioProvider.playLullaby(audioProvider.currentLullaby!);
+                              } else if (audioProvider.availableLullabies.isNotEmpty) {
+                                audioProvider.playLullaby(audioProvider.availableLullabies.first);
+                              }
+                            },
+                          ),
+                          _buildModernQuickActionButton(
+                            icon: cameraProvider.settings.nightVisionEnabled ? Icons.remove_red_eye : Icons.remove_red_eye_outlined,
+                            label: 'Vision nuit',
+                            isActive: cameraProvider.settings.nightVisionEnabled,
+                            onTap: () {
+                              final newSettings = cameraProvider.settings.copyWith(
+                                nightVisionEnabled: !cameraProvider.settings.nightVisionEnabled,
+                              );
+                              cameraProvider.updateSettings(newSettings);
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -406,7 +422,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                     ),
                     const SizedBox(height: 12),
                     
-                    // Cartes des capteurs
+                    // Cartes des capteurs avec couleurs adaptatives
                     if (sensorProvider.currentData != null)
                       Container(
                         decoration: BoxDecoration(
@@ -425,7 +441,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                     title: 'Température',
                                     value: '${sensorProvider.currentData!.temperature.toStringAsFixed(1)}°C',
                                     icon: Icons.thermostat,
-                                    color: AppColors.temperatureColor,
+                                    color: temperatureColor, // Couleur adaptative
                                     borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(16),
                                     ),
@@ -441,7 +457,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                     title: 'Humidité',
                                     value: '${sensorProvider.currentData!.humidity.toStringAsFixed(0)}%',
                                     icon: Icons.water_drop,
-                                    color: AppColors.humidityColor,
+                                    color: humidityColor, // Couleur adaptative
                                     borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(16),
                                     ),
@@ -460,7 +476,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                     title: 'Qualité d\'air',
                                     value: sensorProvider.currentData!.airQuality.toStringAsFixed(0),
                                     icon: Icons.air,
-                                    color: AppColors.airQualityColor,
+                                    color: airQualityColor, // Couleur adaptative
                                     borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(16),
                                     ),
@@ -476,7 +492,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                     title: 'Luminosité',
                                     value: '${sensorProvider.currentData!.lightLevel.toStringAsFixed(0)} lux',
                                     icon: Icons.light_mode,
-                                    color: AppColors.lightLevelColor,
+                                    color: lightLevelColor, // Couleur adaptative
                                     borderRadius: const BorderRadius.only(
                                       bottomRight: Radius.circular(16),
                                     ),
@@ -560,7 +576,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                           itemBuilder: (context, index) {
                             final event = cameraProvider.events[index];
                             return ListTile(
-                              leading: _buildEventIcon(event.type),
+                              leading: _buildEventIcon(event.type, currentTheme),
                               title: Text(
                                 _getEventTitle(event.type),
                                 style: TextStyle(
@@ -621,7 +637,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                     
                     const SizedBox(height: 24),
                     
-                    // Section statistiques (résumé)
+                    // Section statistiques avec couleurs adaptatives
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -665,7 +681,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                     ),
                     const SizedBox(height: 12),
                     
-                    // Aperçu du sommeil
+                    // Aperçu du sommeil avec couleurs adaptatives
                     Card(
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -685,7 +701,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                 label: 'Durée',
                                 value: '7h20',
                                 icon: Icons.bed,
-                                color: AppColors.sleepColor,
+                                color: colorScheme.primary,
                               ),
                             ),
                             Expanded(
@@ -693,7 +709,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                 label: 'Qualité',
                                 value: 'Bonne',
                                 icon: Icons.thumb_up,
-                                color: AppColors.success,
+                                color: airQualityColor, // Utilise la couleur adaptative
                               ),
                             ),
                             Expanded(
@@ -701,7 +717,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                 label: 'Réveils',
                                 value: '3',
                                 icon: Icons.notifications_active,
-                                color: AppColors.warning,
+                                color: temperatureColor, // Utilise la couleur adaptative
                               ),
                             ),
                           ],
@@ -716,6 +732,74 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
             ),
           ],
         ),
+      ),
+    );
+  }
+  
+  // Gradient adaptatif selon le thème
+  Gradient _getHeaderGradient(ColorSchemeType theme) {
+    switch (theme) {
+      case ColorSchemeType.dark:
+        return const LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFF2A2A2A), Color(0xFF1A1A1A)],
+        );
+      case ColorSchemeType.original:
+        return const LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFFB1B0DC), Color(0xFF9B99CE)],
+        );
+      case ColorSchemeType.cosmic:
+        return const LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFF8E77FF), Color(0xFF1a1a2e)],
+        );
+    }
+  }
+  
+  
+  // Style moderne avec boutons ronds (comme dans la 2ème photo)
+  Widget _buildModernQuickActionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    bool isActive = false,
+  }) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: isActive 
+                  ? Colors.white
+                  : Colors.white.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: isActive
+                  ? theme.colorScheme.primary
+                  : Colors.white,
+              size: 28,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.9),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -759,25 +843,33 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
     );
   }
   
-  Widget _buildEventIcon(String type) {
+  Widget _buildEventIcon(String type, ColorSchemeType currentTheme) {
     Color backgroundColor;
     IconData iconData;
     
     switch (type) {
       case 'cry':
-        backgroundColor = Colors.red.shade100;
+        backgroundColor = currentTheme == ColorSchemeType.dark 
+            ? const Color(0xFFFF8E99).withOpacity(0.2)
+            : Colors.red.shade100;
         iconData = Icons.volume_up;
         break;
       case 'movement':
-        backgroundColor = Colors.orange.shade100;
+        backgroundColor = currentTheme == ColorSchemeType.dark 
+            ? const Color(0xFFFFB26B).withOpacity(0.2)
+            : Colors.orange.shade100;
         iconData = Icons.directions_run;
         break;
       case 'face_detected':
-        backgroundColor = Colors.blue.shade100;
+        backgroundColor = currentTheme == ColorSchemeType.dark 
+            ? const Color(0xFF81C8FF).withOpacity(0.2)
+            : Colors.blue.shade100;
         iconData = Icons.face;
         break;
       default:
-        backgroundColor = Colors.grey.shade100;
+        backgroundColor = currentTheme == ColorSchemeType.dark 
+            ? Colors.grey.withOpacity(0.2)
+            : Colors.grey.shade100;
         iconData = Icons.event;
     }
     
@@ -790,7 +882,9 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
       ),
       child: Icon(
         iconData,
-        color: backgroundColor.withAlpha(255),
+        color: currentTheme == ColorSchemeType.dark 
+            ? Colors.white
+            : backgroundColor.withAlpha(255),
       ),
     );
   }

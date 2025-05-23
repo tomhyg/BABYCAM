@@ -36,9 +36,9 @@ class AppThemeLogo {
       onErrorContainer: Colors.white,
       
       // Couleurs de fond
-      background: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      background: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       onBackground: isDark ? Colors.white : Colors.black,
-      surface: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+      surface: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       onSurface: isDark ? Colors.white : Colors.black,
       
       // Couleurs supplémentaires
@@ -48,7 +48,7 @@ class AppThemeLogo {
       outlineVariant: isDark ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.2),
       shadow: Colors.black,
       scrim: Colors.black,
-      inverseSurface: isDark ? AppColors.surfaceLight : AppColors.surfaceDark,
+      inverseSurface: isDark ? AppColors.lightSurface : AppColors.darkSurface,
       onInverseSurface: isDark ? Colors.black : Colors.white,
       inversePrimary: isDark ? AppColors.primary.withOpacity(0.8) : AppColors.primary.withOpacity(0.2),
       surfaceTint: AppColors.primary,
@@ -230,7 +230,7 @@ class AppThemeLogo {
       ),
       
       // Polices de caractères
-      textTheme: TextTheme(
+      textTheme: const TextTheme(
         displayLarge: AppTextStyles.headline1,
         displayMedium: AppTextStyles.headline2,
         displaySmall: AppTextStyles.headline3,
@@ -455,7 +455,7 @@ class AppThemeLogo {
       ),
       
       // Polices de caractères
-      textTheme: TextTheme(
+      textTheme: const TextTheme(
         displayLarge: AppTextStyles.headline1,
         displayMedium: AppTextStyles.headline2,
         displaySmall: AppTextStyles.headline3,

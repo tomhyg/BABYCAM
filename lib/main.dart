@@ -1,4 +1,4 @@
-// lib/main.dart (COMPLET)
+// lib/main.dart (mis à jour)
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,23 +8,19 @@ import 'ui/screens/splash_screen.dart';
 import 'ui/screens/onboarding_screen.dart';
 import 'ui/screens/home_screen_modern.dart';
 
-
 // Imports du thème
-import 'ui/theme/app_colors.dart';
 import 'ui/theme/app_theme_manager.dart';
 
-// Providers existants
+// Providers
 import 'providers/camera_provider.dart';
 import 'providers/sensor_provider.dart';
 import 'providers/audio_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/ai_analysis_provider.dart';
-
-// Nouveaux providers
 import 'providers/nightlight_provider.dart';
 import 'providers/monitoring_provider.dart';
-import 'providers/nightlight_provider.dart';
+import 'providers/intercom_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +34,6 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        // Providers existants
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => CameraProvider()),
@@ -46,10 +41,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AudioProvider()),
         ChangeNotifierProvider(create: (_) => AIAnalysisProvider()),
         ChangeNotifierProvider(create: (_) => NightlightProvider()),
-        
-        // Nouveaux providers pour les fonctionnalités avancées
-        ChangeNotifierProvider(create: (_) => NightlightProvider()),
         ChangeNotifierProvider(create: (_) => MonitoringProvider()),
+        ChangeNotifierProvider(create: (_) => IntercomProvider()),
       ],
       child: const BabycamApp(),
     ),
@@ -74,14 +67,14 @@ class _BabycamAppState extends State<BabycamApp> {
   
   Future<void> _initializeApp() async {
     try {
-      // Initialiser le provider de paramètres en premier (contient les thèmes)
+      // Initialiser le provider de paramètres en premier
       final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
       await settingsProvider.initialize();
       
       // Configurer la barre de statut selon le thème
-      _updateSystemUI(settingsProvider.darkMode);
+      _updateSystemUI(settingsProvider.colorScheme);
       
-      // Initialiser les providers existants
+      // Initialiser les autres providers
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       await authProvider.initialize();
       
@@ -97,14 +90,16 @@ class _BabycamAppState extends State<BabycamApp> {
       final aiAnalysisProvider = Provider.of<AIAnalysisProvider>(context, listen: false);
       aiAnalysisProvider.initialize(settingsProvider.baseUrl);
       
-      // Initialiser les nouveaux providers
       final nightlightProvider = Provider.of<NightlightProvider>(context, listen: false);
       nightlightProvider.initialize(settingsProvider.baseUrl);
       
       final monitoringProvider = Provider.of<MonitoringProvider>(context, listen: false);
       monitoringProvider.initialize(settingsProvider.baseUrl);
       
-      // Attendre un court délai pour s'assurer que tout est initialisé
+      final intercomProvider = Provider.of<IntercomProvider>(context, listen: false);
+      intercomProvider.initialize('192.168.1.95', 8080);
+      
+      // Attendre un court délai
       await Future.delayed(const Duration(milliseconds: 500));
       
       setState(() {
@@ -113,36 +108,35 @@ class _BabycamAppState extends State<BabycamApp> {
       
       debugPrint('🚀 BABYCAM AI - Tous les providers initialisés avec succès');
       debugPrint('🎨 Thème actuel: ${settingsProvider.currentThemeName}');
-      debugPrint('🌓 Mode sombre: ${settingsProvider.darkMode}');
       
     } catch (e) {
       debugPrint('❌ Erreur lors de l\'initialisation: $e');
-      // En cas d'erreur, on marque quand même comme initialisé pour éviter un blocage
       setState(() {
         _initialized = true;
       });
     }
   }
 
-  void _updateSystemUI(bool isDarkMode) {
+  void _updateSystemUI(ColorSchemeType colorScheme) {
+    final isDarkTheme = colorScheme == ColorSchemeType.dark || colorScheme == ColorSchemeType.cosmic;
+    
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
-      statusBarBrightness: isDarkMode ? Brightness.dark : Brightness.light,
-      systemNavigationBarColor: isDarkMode ? const Color(0xFF1a1a1a) : Colors.white,
-      systemNavigationBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
+      statusBarIconBrightness: isDarkTheme ? Brightness.light : Brightness.dark,
+      statusBarBrightness: isDarkTheme ? Brightness.dark : Brightness.light,
+      systemNavigationBarColor: isDarkTheme ? const Color(0xFF1a1a1a) : Colors.white,
+      systemNavigationBarIconBrightness: isDarkTheme ? Brightness.light : Brightness.dark,
     ));
   }
 
   @override
   Widget build(BuildContext context) {
-    // Affichage du splash screen pendant l'initialisation
+    // Splash screen pendant l'initialisation
     if (!_initialized) {
       return MaterialApp(
         title: 'BABYCAM AI',
         theme: AppThemeManager.createTheme(
-          colorScheme: ColorSchemeType.cosmic,
-          isDarkMode: true,
+          colorScheme: ColorSchemeType.dark,
         ),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
@@ -201,15 +195,12 @@ class _BabycamAppState extends State<BabycamApp> {
       builder: (context, settings, child) {
         // Mettre à jour la barre de statut quand le thème change
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _updateSystemUI(settings.darkMode);
+          _updateSystemUI(settings.colorScheme);
         });
         
         return MaterialApp(
           title: 'BABYCAM AI',
-          theme: AppThemeManager.createTheme(
-            colorScheme: settings.colorScheme,
-            isDarkMode: settings.darkMode,
-          ),
+          theme: settings.getThemeData(),
           debugShowCheckedModeBanner: false,
           
           // Configuration des routes
@@ -219,7 +210,7 @@ class _BabycamAppState extends State<BabycamApp> {
           builder: (context, child) {
             return MediaQuery(
               data: MediaQuery.of(context).copyWith(
-                textScaleFactor: 1.0, // Empêche le zoom système
+                textScaleFactor: 1.0,
               ),
               child: child!,
             );
@@ -230,7 +221,6 @@ class _BabycamAppState extends State<BabycamApp> {
   }
 
   Widget _getStartupScreen(SettingsProvider settings) {
-    // Logique de navigation au démarrage
     if (!settings.onboardingCompleted) {
       debugPrint('📱 Navigation: Affichage de l\'onboarding');
       return const OnboardingScreen();
@@ -238,26 +228,5 @@ class _BabycamAppState extends State<BabycamApp> {
     
     debugPrint('📱 Navigation: Affichage de l\'écran principal');
     return const HomeScreenModern();
-  }
-}
-
-// ============================================================================
-// CONFIGURATION GLOBALE DE L'APPLICATION
-// ============================================================================
-class AppConfig {
-  static const String appName = 'BABYCAM AI';
-  static const String appVersion = '2.0.0';
-  
-  // Configuration par défaut du thème
-  static const ColorSchemeType defaultColorScheme = ColorSchemeType.cosmic;
-  static const bool defaultDarkMode = true;
-  
-  // Configuration de debug
-  static const bool enableDebugLogs = true;
-  
-  static void debugLog(String message) {
-    if (enableDebugLogs) {
-      debugPrint('🔧 BABYCAM: $message');
-    }
   }
 }
