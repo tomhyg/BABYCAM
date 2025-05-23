@@ -1,7 +1,7 @@
 // lib/ui/theme/app_theme_logo.dart
 
 import 'package:flutter/material.dart';
-import 'app_colors_logo.dart';
+import 'app_colors.dart';
 import 'app_text_styles.dart';
 
 class AppThemeLogo {
@@ -12,46 +12,46 @@ class AppThemeLogo {
     return ColorScheme(
       brightness: brightness,
       // Couleurs primaires
-      primary: AppColorsLogo.primary,
+      primary: AppColors.primary,
       onPrimary: isDark ? Colors.black : Colors.white,
-      primaryContainer: isDark ? AppColorsLogo.primary.withOpacity(0.2) : AppColorsLogo.primary.withOpacity(0.8),
-      onPrimaryContainer: isDark ? AppColorsLogo.primary.withOpacity(0.8) : Colors.white,
+      primaryContainer: isDark ? AppColors.primary.withOpacity(0.2) : AppColors.primary.withOpacity(0.8),
+      onPrimaryContainer: isDark ? AppColors.primary.withOpacity(0.8) : Colors.white,
       
       // Couleurs secondaires
-      secondary: AppColorsLogo.secondary,
+      secondary: AppColors.secondary,
       onSecondary: isDark ? Colors.black : Colors.white,
-      secondaryContainer: isDark ? AppColorsLogo.secondary.withOpacity(0.2) : AppColorsLogo.secondary.withOpacity(0.8),
-      onSecondaryContainer: isDark ? AppColorsLogo.secondary.withOpacity(0.8) : Colors.white,
+      secondaryContainer: isDark ? AppColors.secondary.withOpacity(0.2) : AppColors.secondary.withOpacity(0.8),
+      onSecondaryContainer: isDark ? AppColors.secondary.withOpacity(0.8) : Colors.white,
       
       // Couleurs tertiaires
-      tertiary: AppColorsLogo.accent,
+      tertiary: AppColors.accent,
       onTertiary: Colors.white,
-      tertiaryContainer: isDark ? AppColorsLogo.accent.withOpacity(0.2) : AppColorsLogo.accent.withOpacity(0.8),
+      tertiaryContainer: isDark ? AppColors.accent.withOpacity(0.2) : AppColors.accent.withOpacity(0.8),
       onTertiaryContainer: Colors.white,
       
       // Couleurs d'erreur
-      error: isDark ? AppColorsLogo.error : AppColorsLogo.error,
+      error: isDark ? AppColors.error : AppColors.error,
       onError: Colors.white,
-      errorContainer: isDark ? AppColorsLogo.error.withOpacity(0.2) : AppColorsLogo.error.withOpacity(0.8),
+      errorContainer: isDark ? AppColors.error.withOpacity(0.2) : AppColors.error.withOpacity(0.8),
       onErrorContainer: Colors.white,
       
       // Couleurs de fond
-      background: isDark ? AppColorsLogo.backgroundDark : AppColorsLogo.backgroundLight,
+      background: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       onBackground: isDark ? Colors.white : Colors.black,
-      surface: isDark ? AppColorsLogo.surfaceDark : AppColorsLogo.surfaceLight,
+      surface: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
       onSurface: isDark ? Colors.white : Colors.black,
       
       // Couleurs supplémentaires
-      surfaceVariant: isDark ? AppColorsLogo.surfaceVariantDark : AppColorsLogo.surfaceVariantLight,
+      surfaceVariant: isDark ? AppColors.surfaceVariantDark : AppColors.surfaceVariantLight,
       onSurfaceVariant: isDark ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
       outline: isDark ? Colors.white.withOpacity(0.4) : Colors.black.withOpacity(0.4),
       outlineVariant: isDark ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.2),
       shadow: Colors.black,
       scrim: Colors.black,
-      inverseSurface: isDark ? AppColorsLogo.surfaceLight : AppColorsLogo.surfaceDark,
+      inverseSurface: isDark ? AppColors.surfaceLight : AppColors.surfaceDark,
       onInverseSurface: isDark ? Colors.black : Colors.white,
-      inversePrimary: isDark ? AppColorsLogo.primary.withOpacity(0.8) : AppColorsLogo.primary.withOpacity(0.2),
-      surfaceTint: AppColorsLogo.primary,
+      inversePrimary: isDark ? AppColors.primary.withOpacity(0.8) : AppColors.primary.withOpacity(0.2),
+      surfaceTint: AppColors.primary,
     );
   }
 
@@ -137,7 +137,7 @@ class AppThemeLogo {
       
       // Style des boutons icônes (flottants)
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: AppColorsLogo.secondary,
+        backgroundColor: AppColors.secondary,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -187,7 +187,7 @@ class AppThemeLogo {
         }),
         trackColor: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.selected)) {
-            return AppColorsLogo.secondary;
+            return AppColors.secondary;
           }
           return colorScheme.surfaceVariant;
         }),
@@ -195,10 +195,10 @@ class AppThemeLogo {
       
       // Style des sliders
       sliderTheme: SliderThemeData(
-        activeTrackColor: AppColorsLogo.secondary,
+        activeTrackColor: AppColors.secondary,
         inactiveTrackColor: colorScheme.surfaceVariant,
-        thumbColor: AppColorsLogo.secondary,
-        overlayColor: AppColorsLogo.secondary.withOpacity(0.2),
+        thumbColor: AppColors.secondary,
+        overlayColor: AppColors.secondary.withOpacity(0.2),
         trackHeight: 4,
         thumbShape: const RoundSliderThumbShape(
           enabledThumbRadius: 10,
@@ -221,7 +221,7 @@ class AppThemeLogo {
       chipTheme: ChipThemeData(
         backgroundColor: colorScheme.surfaceVariant,
         labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-        selectedColor: AppColorsLogo.primary,
+        selectedColor: AppColors.primary,
         showCheckmark: false,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         shape: RoundedRectangleBorder(
@@ -252,8 +252,8 @@ class AppThemeLogo {
       ),
       
       // Configuration supplémentaire pour Material 3
-      splashColor: AppColorsLogo.primary.withOpacity(0.1),
-      highlightColor: AppColorsLogo.primary.withOpacity(0.05),
+      splashColor: AppColors.primary.withOpacity(0.1),
+      highlightColor: AppColors.primary.withOpacity(0.05),
       dividerTheme: DividerThemeData(
         color: colorScheme.outlineVariant,
         thickness: 1,
@@ -264,14 +264,14 @@ class AppThemeLogo {
         size: 24,
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: AppColorsLogo.secondary,
+        color: AppColors.secondary,
         circularTrackColor: colorScheme.surfaceVariant,
         linearTrackColor: colorScheme.surfaceVariant,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
         backgroundColor: colorScheme.surface,
-        selectedItemColor: AppColorsLogo.accent,
+        selectedItemColor: AppColors.accent,
         unselectedItemColor: colorScheme.onSurfaceVariant,
         showSelectedLabels: true,
         showUnselectedLabels: true,
@@ -323,7 +323,7 @@ class AppThemeLogo {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: AppColorsLogo.secondary,
+          backgroundColor: AppColors.secondary,
           elevation: 0,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           shape: RoundedRectangleBorder(
@@ -337,7 +337,7 @@ class AppThemeLogo {
       // Style des boutons texte
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColorsLogo.secondary,
+          foregroundColor: AppColors.secondary,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -349,7 +349,7 @@ class AppThemeLogo {
       // Style des boutons contour
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColorsLogo.secondary,
+          foregroundColor: AppColors.secondary,
           side: BorderSide(color: colorScheme.outline, width: 1),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           shape: RoundedRectangleBorder(
@@ -362,7 +362,7 @@ class AppThemeLogo {
       
       // Style des boutons icônes (flottants)
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: AppColorsLogo.secondary,
+        backgroundColor: AppColors.secondary,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -385,7 +385,7 @@ class AppThemeLogo {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: AppColorsLogo.secondary,
+            color: AppColors.secondary,
             width: 2,
           ),
         ),
@@ -412,7 +412,7 @@ class AppThemeLogo {
         }),
         trackColor: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.selected)) {
-            return AppColorsLogo.secondary;
+            return AppColors.secondary;
           }
           return colorScheme.surfaceVariant;
         }),
@@ -420,10 +420,10 @@ class AppThemeLogo {
       
       // Style des sliders
       sliderTheme: SliderThemeData(
-        activeTrackColor: AppColorsLogo.secondary,
+        activeTrackColor: AppColors.secondary,
         inactiveTrackColor: colorScheme.surfaceVariant,
-        thumbColor: AppColorsLogo.secondary,
-        overlayColor: AppColorsLogo.secondary.withOpacity(0.2),
+        thumbColor: AppColors.secondary,
+        overlayColor: AppColors.secondary.withOpacity(0.2),
         trackHeight: 4,
         thumbShape: const RoundSliderThumbShape(
           enabledThumbRadius: 10,
@@ -446,7 +446,7 @@ class AppThemeLogo {
       chipTheme: ChipThemeData(
         backgroundColor: colorScheme.surfaceVariant,
         labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-        selectedColor: AppColorsLogo.secondary,
+        selectedColor: AppColors.secondary,
         showCheckmark: false,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         shape: RoundedRectangleBorder(
@@ -477,8 +477,8 @@ class AppThemeLogo {
       ),
       
       // Configuration supplémentaire pour Material 3
-      splashColor: AppColorsLogo.secondary.withOpacity(0.1),
-      highlightColor: AppColorsLogo.secondary.withOpacity(0.05),
+      splashColor: AppColors.secondary.withOpacity(0.1),
+      highlightColor: AppColors.secondary.withOpacity(0.05),
       dividerTheme: DividerThemeData(
         color: colorScheme.outlineVariant,
         thickness: 1,
@@ -489,14 +489,14 @@ class AppThemeLogo {
         size: 24,
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: AppColorsLogo.secondary,
+        color: AppColors.secondary,
         circularTrackColor: colorScheme.surfaceVariant,
         linearTrackColor: colorScheme.surfaceVariant,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
         backgroundColor: colorScheme.surface,
-        selectedItemColor: AppColorsLogo.secondary,
+        selectedItemColor: AppColors.secondary,
         unselectedItemColor: colorScheme.onSurfaceVariant,
         showSelectedLabels: true,
         showUnselectedLabels: true,

@@ -2,9 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import '../theme/app_colors_logo.dart';
+import '../theme/app_colors.dart';
 import '../../providers/camera_provider.dart';
 import '../../providers/sensor_provider.dart';
 import '../../providers/audio_provider.dart';
@@ -12,7 +10,7 @@ import 'live_view_screen.dart';
 import 'events_screen.dart';
 import 'sensor_dashboard_screen.dart';
 import 'statistics_screen.dart';
-import '../widgets/animated_gradient_background.dart';
+// import '../widgets/animated_gradient_background.dart';  // ❌ Temporairement commenté
 import '../widgets/sensor_card_modern.dart';
 
 class HomeScreenModern extends StatefulWidget {
@@ -53,8 +51,15 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
       body: SafeArea(
         child: Column(
           children: [
-            // En-tête avec gradient animé
-            AnimatedGradientBackground(
+            // En-tête avec gradient simple (sans AnimatedGradientBackground)
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [AppColors.primary, AppColors.primaryVariant],
+                ),
+              ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                 child: Column(
@@ -123,10 +128,9 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                     ),
                     const SizedBox(height: 24),
                     
-                    // Affichage du flux vidéo (preview) avec optimisation
+                    // Affichage du flux vidéo (preview) - Simplifié
                     GestureDetector(
                       onTap: () {
-                        // Ouvrir l'écran de vue en direct
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const LiveViewScreen()),
@@ -149,53 +153,38 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                             ),
                           ],
                         ),
-                        clipBehavior: Clip.hardEdge, // Important pour éviter le débordement
                         child: Stack(
                           children: [
-                            // Flux vidéo avec WebView optimisé
+                            // Flux vidéo simplifié
                             ClipRRect(
                               borderRadius: BorderRadius.circular(16),
-                              child: cameraProvider.isStreaming
-                                ? WebView(
-                                    initialUrl: 'about:blank',
-                                    javascriptMode: JavascriptMode.unrestricted,
-                                    backgroundColor: Colors.black,
-                                    onWebViewCreated: (WebViewController controller) {
-                                      // Utiliser HTML pour contrôler le format d'affichage
-                                      controller.loadHtmlString('''
-                                        <!DOCTYPE html>
-                                        <html>
-                                        <head>
-                                          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                          <style>
-                                            body { 
-                                              margin: 0; 
-                                              padding: 0; 
-                                              background-color: black; 
-                                              overflow: hidden;
-                                              width: 100vw;
-                                              height: 100vh;
-                                              display: flex;
-                                              align-items: center;
-                                              justify-content: center;
-                                            }
-                                            img { 
-                                              min-width: 100%; 
-                                              min-height: 100%; 
-                                              width: auto;
-                                              height: auto;
-                                              object-fit: cover; /* Pour remplir tout l'espace */
-                                            }
-                                          </style>
-                                        </head>
-                                        <body>
-                                          <img src="http://192.168.1.95:8080/stream" />
-                                        </body>
-                                        </html>
-                                      ''');
-                                    },
-                                    onWebResourceError: (error) {
-                                      print("Erreur WebView: ${error.description}");
+                              child: cameraProvider.isStreaming && cameraProvider.streamUrl.isNotEmpty
+                                ? Image.network(
+                                    "http://192.168.1.95:8080/stream",
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 200,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.videocam_off,
+                                              size: 48,
+                                              color: Colors.white.withOpacity(0.7),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'Erreur de connexion',
+                                              style: TextStyle(
+                                                color: Colors.white.withOpacity(0.7),
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
                                     },
                                   )
                                 : Center(
@@ -293,95 +282,69 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                       ),
                     ),
                     
-                    // Contrôles rapides sous le flux vidéo (sans mode nuit)
+                    // Contrôles rapides sous le flux vidéo
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center, // Centre les boutons
-                        children: [
-                          _buildQuickActionButton(
-                            icon: Icons.photo_camera,
-                            label: 'Capture',
-                            onTap: () {
-                              cameraProvider.captureSnapshot();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text('Capture d\'écran prise'),
-                                  behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  backgroundColor: colorScheme.primary,
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 24), // Plus d'espace entre les boutons
-                                              // Nouveau bouton d'interphone
-                          _buildQuickActionButton(
-                            icon: cameraProvider.isIntercomActive ? Icons.mic_off : Icons.mic,
-                            label: 'Interphone',
-                            isActive: cameraProvider.isIntercomActive,
-                            onTap: () async {
-                              try {
-                                await cameraProvider.toggleIntercom();
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildQuickActionButton(
+                              icon: Icons.photo_camera,
+                              label: 'Capture',
+                              onTap: () {
+                                cameraProvider.captureSnapshot();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      cameraProvider.isIntercomActive 
-                                          ? 'Interphone activé' 
-                                          : 'Interphone désactivé'
-                                    ),
+                                    content: const Text('Capture d\'écran prise'),
                                     behavior: SnackBarBehavior.floating,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    duration: const Duration(seconds: 2),
+                                    backgroundColor: colorScheme.primary,
                                   ),
                                 );
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Erreur: $e'),
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    backgroundColor: Colors.red,
-                                  ),
+                              },
+                            ),
+                            const SizedBox(width: 12),
+                            _buildQuickActionButton(
+                              icon: cameraProvider.isNightLightOn ? Icons.nightlight_round : Icons.nightlight_outlined,
+                              label: 'Veilleuse',
+                              isActive: cameraProvider.isNightLightOn,
+                              onTap: () {
+                                cameraProvider.toggleNightLight(!cameraProvider.isNightLightOn);
+                              },
+                            ),
+                            const SizedBox(width: 12),
+                            _buildQuickActionButton(
+                              icon: audioProvider.isPlaying ? Icons.music_note : Icons.music_note_outlined,
+                              label: 'Berceuse',
+                              isActive: audioProvider.isPlaying,
+                              onTap: () {
+                                if (audioProvider.isPlaying) {
+                                  audioProvider.stopLullaby();
+                                } else if (audioProvider.currentLullaby != null) {
+                                  audioProvider.playLullaby(audioProvider.currentLullaby!);
+                                } else if (audioProvider.availableLullabies.isNotEmpty) {
+                                  audioProvider.playLullaby(audioProvider.availableLullabies.first);
+                                }
+                              },
+                            ),
+                            const SizedBox(width: 12),
+                            _buildQuickActionButton(
+                              icon: cameraProvider.settings.nightVisionEnabled ? Icons.remove_red_eye : Icons.remove_red_eye_outlined,
+                              label: 'Vision nuit',
+                              isActive: cameraProvider.settings.nightVisionEnabled,
+                              onTap: () {
+                                final newSettings = cameraProvider.settings.copyWith(
+                                  nightVisionEnabled: !cameraProvider.settings.nightVisionEnabled,
                                 );
-                              }
-                            },
-                          ),
-                          const SizedBox(width: 24),
-                          
-
-                          
-                          _buildQuickActionButton(
-                            icon: cameraProvider.isNightLightOn ? Icons.lightbulb : Icons.lightbulb_outline,
-                            label: 'Veilleuse',
-                            isActive: cameraProvider.isNightLightOn,
-                            onTap: () {
-                              cameraProvider.toggleNightLight(!cameraProvider.isNightLightOn);
-                            },
-                          ),
-                          const SizedBox(width: 48), // Plus d'espace entre les boutons
-                          
-                          _buildQuickActionButton(
-                            icon: audioProvider.isPlaying ? Icons.music_note : Icons.music_note_outlined,
-                            label: 'Berceuse',
-                            isActive: audioProvider.isPlaying,
-                            onTap: () {
-                              if (audioProvider.isPlaying) {
-                                audioProvider.stopLullaby();
-                              } else if (audioProvider.currentLullaby != null) {
-                                audioProvider.playLullaby(audioProvider.currentLullaby!);
-                              } else if (audioProvider.availableLullabies.isNotEmpty) {
-                                audioProvider.playLullaby(audioProvider.availableLullabies.first);
-                              }
-                            },
-                          ),
-                        ],
+                                cameraProvider.updateSettings(newSettings);
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -462,7 +425,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                     title: 'Température',
                                     value: '${sensorProvider.currentData!.temperature.toStringAsFixed(1)}°C',
                                     icon: Icons.thermostat,
-                                    color: AppColorsLogo.temperatureColor,
+                                    color: AppColors.temperatureColor,
                                     borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(16),
                                     ),
@@ -478,7 +441,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                     title: 'Humidité',
                                     value: '${sensorProvider.currentData!.humidity.toStringAsFixed(0)}%',
                                     icon: Icons.water_drop,
-                                    color: AppColorsLogo.humidityColor,
+                                    color: AppColors.humidityColor,
                                     borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(16),
                                     ),
@@ -497,7 +460,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                     title: 'Qualité d\'air',
                                     value: sensorProvider.currentData!.airQuality.toStringAsFixed(0),
                                     icon: Icons.air,
-                                    color: AppColorsLogo.airQualityColor,
+                                    color: AppColors.airQualityColor,
                                     borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(16),
                                     ),
@@ -513,7 +476,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                     title: 'Luminosité',
                                     value: '${sensorProvider.currentData!.lightLevel.toStringAsFixed(0)} lux',
                                     icon: Icons.light_mode,
-                                    color: AppColorsLogo.lightLevelColor,
+                                    color: AppColors.lightLevelColor,
                                     borderRadius: const BorderRadius.only(
                                       bottomRight: Radius.circular(16),
                                     ),
@@ -722,7 +685,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                 label: 'Durée',
                                 value: '7h20',
                                 icon: Icons.bed,
-                                color: AppColorsLogo.sleepColor,
+                                color: AppColors.sleepColor,
                               ),
                             ),
                             Expanded(
@@ -730,7 +693,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                 label: 'Qualité',
                                 value: 'Bonne',
                                 icon: Icons.thumb_up,
-                                color: AppColorsLogo.success,
+                                color: AppColors.success,
                               ),
                             ),
                             Expanded(
@@ -738,7 +701,7 @@ class _HomeScreenModernState extends State<HomeScreenModern> with SingleTickerPr
                                 label: 'Réveils',
                                 value: '3',
                                 icon: Icons.notifications_active,
-                                color: AppColorsLogo.warning,
+                                color: AppColors.warning,
                               ),
                             ),
                           ],

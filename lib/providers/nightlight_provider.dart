@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../core/models/nightlight_settings.dart';
 import '../core/services/camera_service.dart';
-import '../ui/theme/app_color_schemes.dart';
+import '../ui/theme/app_colors.dart';  // ✅ Import corrigé
 
 class NightlightProvider with ChangeNotifier {
   CameraService? _cameraService;
@@ -16,8 +16,8 @@ class NightlightProvider with ChangeNotifier {
   String get currentColor => _settings.color;
   int get intensity => _settings.intensity;
   
-  // Getter pour les couleurs disponibles
-  Map<String, List<Color>> get availableColors => AppColorSchemes.nightlightColors;
+  // Getter pour les couleurs disponibles - ✅ Corrigé
+  Map<String, List<Color>> get availableColors => AppColors.nightlightColors;
 
   /// Initialise le provider avec l'URL de base de la caméra
   void initialize(String baseUrl) {
@@ -211,17 +211,17 @@ class NightlightProvider with ChangeNotifier {
     return colorIcons[colorKey] ?? Icons.lightbulb;
   }
 
-  /// Vérifie si une couleur est disponible
+  /// Vérifie si une couleur est disponible - ✅ Corrigé
   bool isColorAvailable(String colorKey) {
-    return AppColorSchemes.nightlightColors.containsKey(colorKey);
+    return AppColors.nightlightColors.containsKey(colorKey);
   }
 
-  /// Obtient la liste des couleurs disponibles
-  List<String> get availableColorKeys => AppColorSchemes.nightlightColors.keys.toList();
+  /// Obtient la liste des couleurs disponibles - ✅ Corrigé
+  List<String> get availableColorKeys => AppColors.nightlightColors.keys.toList();
 
-  /// Obtient les couleurs Flutter pour une clé de couleur
+  /// Obtient les couleurs Flutter pour une clé de couleur - ✅ Corrigé
   List<Color> getFlutterColors(String colorKey) {
-    return AppColorSchemes.nightlightColors[colorKey] ?? [Colors.white, Colors.grey];
+    return AppColors.nightlightColors[colorKey] ?? [Colors.white, Colors.grey];
   }
 
   /// Réinitialise aux paramètres par défaut

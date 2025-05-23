@@ -8,8 +8,9 @@ import 'ui/screens/splash_screen.dart';
 import 'ui/screens/onboarding_screen.dart';
 import 'ui/screens/home_screen_modern.dart';
 
+
 // Imports du thème
-import 'ui/theme/app_color_schemes.dart';
+import 'ui/theme/app_colors.dart';
 import 'ui/theme/app_theme_manager.dart';
 
 // Providers existants
@@ -23,6 +24,7 @@ import 'providers/ai_analysis_provider.dart';
 // Nouveaux providers
 import 'providers/nightlight_provider.dart';
 import 'providers/monitoring_provider.dart';
+import 'providers/nightlight_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +45,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SensorProvider()),
         ChangeNotifierProvider(create: (_) => AudioProvider()),
         ChangeNotifierProvider(create: (_) => AIAnalysisProvider()),
+        ChangeNotifierProvider(create: (_) => NightlightProvider()),
         
         // Nouveaux providers pour les fonctionnalités avancées
         ChangeNotifierProvider(create: (_) => NightlightProvider()),

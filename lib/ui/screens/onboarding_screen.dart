@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/settings_provider.dart';
 import '../../providers/auth_provider.dart';
-import '../theme/app_colors.dart';
-import 'home_screen.dart';
+import '../theme/app_colors.dart';  // ✅ Import corrigé
+import 'home_screen_modern.dart';        // ✅ Corrigé
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -37,7 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           gradient: LinearGradient(
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
-            colors: [AppColors.primary, AppColors.primaryVariant],
+            colors: [AppColors.primary, AppColors.primaryVariant], // ✅ Corrigé
           ),
         ),
         child: SafeArea(
@@ -97,10 +97,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
               ],
             ),
-            child: const Icon(
+            child: Icon(
               Icons.baby_changing_station,
               size: 80,
-              color: AppColors.primary,
+              color: AppColors.primary, // ✅ Corrigé
             ),
           ),
           const SizedBox(height: 40),
@@ -217,11 +217,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             onPressed: () {
               // Code pour scanner les caméras disponibles
             },
-            icon: const Icon(Icons.qr_code_scanner, color: AppColors.primary),
+            icon: Icon(Icons.qr_code_scanner, color: AppColors.primary), // ✅ Corrigé
             label: const Text('Scanner le QR code de la caméra'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
-              foregroundColor: AppColors.primary,
+              foregroundColor: AppColors.primary, // ✅ Corrigé
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -365,7 +365,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             value: isEnabled,
             onChanged: onChanged,
             activeColor: Colors.white,
-            activeTrackColor: AppColors.secondary,
+            activeTrackColor: AppColors.secondary, // ✅ Corrigé
           ),
         ],
       ),
@@ -432,7 +432,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
-              foregroundColor: AppColors.primary,
+              foregroundColor: AppColors.primary, // ✅ Corrigé
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
@@ -440,10 +440,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               elevation: 5,
             ),
             child: _isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(color: AppColors.primary),
+                    child: CircularProgressIndicator(color: AppColors.primary), // ✅ Corrigé
                   )
                 : Text(
                     _currentPage == _numPages - 1 ? 'Commencer' : 'Suivant',
@@ -514,7 +514,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       
       // Navigate to home screen
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const HomeScreenModern()), // ✅ Corrigé
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

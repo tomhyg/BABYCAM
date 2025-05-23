@@ -1,11 +1,9 @@
-// ============================================================================
-// lib/ui/widgets/nightlight_controls_modal.dart (COMPLET)
-// ============================================================================
+// lib/ui/widgets/nightlight_controls_modal.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../theme/app_color_schemes.dart';
+import '../theme/app_colors.dart';  // ✅ Import corrigé
 import '../../providers/nightlight_provider.dart';
-import '../../providers/settings_provider.dart';
 
 class NightlightControlsModal extends StatefulWidget {
   const NightlightControlsModal({Key? key}) : super(key: key);
@@ -15,302 +13,276 @@ class NightlightControlsModal extends StatefulWidget {
 }
 
 class _NightlightControlsModalState extends State<NightlightControlsModal> {
-  String selectedColor = 'warm';
-  double intensity = 50;
+  late String _selectedColor;
+  late int _selectedIntensity;
+  DateTime? _scheduledOff;
 
   @override
   void initState() {
     super.initState();
     final nightlightProvider = Provider.of<NightlightProvider>(context, listen: false);
-    selectedColor = nightlightProvider.currentColor;
-    intensity = nightlightProvider.intensity.toDouble();
+    _selectedColor = nightlightProvider.currentColor;
+    _selectedIntensity = nightlightProvider.intensity;
+    _scheduledOff = nightlightProvider.settings.scheduledOff;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<SettingsProvider, NightlightProvider>(
-      builder: (context, settings, nightlight, child) {
-        final colors = settings.currentColors;
-        final isDarkMode = settings.darkMode;
-        
-        return Container(
-          decoration: BoxDecoration(
-            color: isDarkMode ? colors['surface'] : Colors.white,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 20,
-                offset: const Offset(0, -5),
+    final nightlightProvider = Provider.of<NightlightProvider>(context);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // En-tête
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Contrôles Veilleuse',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
               ),
             ],
           ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+          const SizedBox(height: 20),
+
+          // Interrupteur principal
+          SwitchListTile(
+            title: const Text('Veilleuse'),
+            subtitle: Text(nightlightProvider.settingsSummary),
+            value: nightlightProvider.isEnabled,
+            onChanged: (value) async {
+              await nightlightProvider.toggle();
+            },
+            activeColor: AppColors.primary,  // ✅ Corrigé
+          ),
+
+          if (nightlightProvider.isEnabled) ...[
+            const Divider(),
+
+            // Sélection de couleur
+            const Text(
+              'Couleur',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 60,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: AppColors.nightlightColors.length,  // ✅ Corrigé
+                itemBuilder: (context, index) {
+                  final colorKey = AppColors.nightlightColors.keys.elementAt(index);  // ✅ Corrigé
+                  final colors = AppColors.nightlightColors[colorKey]!;  // ✅ Corrigé
+                  final isSelected = _selectedColor == colorKey;
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedColor = colorKey;
+                      });
+                      nightlightProvider.updateSettings(color: colorKey);
+                    },
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      margin: const EdgeInsets.only(right: 12),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: colors,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isSelected ? AppColors.primary : Colors.grey.shade300,  // ✅ Corrigé
+                          width: isSelected ? 3 : 1,
+                        ),
+                      ),
+                      child: isSelected
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 20,
+                            )
+                          : null,
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Contrôle d'intensité
+            const Text(
+              'Intensité',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.brightness_low, size: 20),
+                Expanded(
+                  child: Slider(
+                    value: _selectedIntensity.toDouble(),
+                    min: 10,
+                    max: 100,
+                    divisions: 9,
+                    label: '$_selectedIntensity%',
+                    activeColor: AppColors.primary,  // ✅ Corrigé
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedIntensity = value.round();
+                      });
+                    },
+                    onChangeEnd: (value) {
+                      nightlightProvider.updateSettings(intensity: value.round());
+                    },
+                  ),
+                ),
+                const Icon(Icons.brightness_high, size: 20),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // Programmation d'extinction
+            const Text(
+              'Extinction programmée',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 8),
+            if (nightlightProvider.hasScheduledOff) ...[
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),  // ✅ Corrigé
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.schedule, color: AppColors.primary),  // ✅ Corrigé
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Extinction dans ${nightlightProvider.timeUntilOff?.inMinutes ?? 0} minutes',
+                        style: TextStyle(color: AppColors.primary),  // ✅ Corrigé
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        nightlightProvider.cancelScheduledOff();
+                        setState(() {
+                          _scheduledOff = null;
+                        });
+                      },
+                      icon: const Icon(Icons.close, size: 20),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              Row(
                 children: [
-                  // Handle
-                  Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: isDarkMode ? Colors.white38 : Colors.black26,
-                      borderRadius: BorderRadius.circular(2),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _showTimePicker(context, nightlightProvider),
+                      icon: const Icon(Icons.schedule),
+                      label: const Text('Programmer extinction'),
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  
-                  // Titre
-                  Row(
-                    children: [
-                      const Text(
-                        '🌙',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Contrôles Veilleuse',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: isDarkMode ? Colors.white : Colors.black,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Icon(
-                          Icons.close,
-                          color: isDarkMode ? Colors.white70 : Colors.black54,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Sélecteur de couleurs
-                  _buildColorPicker(colors, isDarkMode),
-                  const SizedBox(height: 32),
-
-                  // Contrôle d'intensité
-                  _buildIntensityControl(colors, isDarkMode),
-                  const SizedBox(height: 32),
-
-                  // Boutons d'action
-                  _buildActionButtons(colors, isDarkMode),
                 ],
               ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+            ],
+          ],
 
-  Widget _buildColorPicker(Map<String, Color> themeColors, bool isDarkMode) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Couleur',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: isDarkMode ? Colors.white : Colors.black,
-          ),
-        ),
-        const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1,
-          ),
-          itemCount: AppColorSchemes.nightlightColors.length,
-          itemBuilder: (context, index) {
-            final colorKey = AppColorSchemes.nightlightColors.keys.elementAt(index);
-            final colors = AppColorSchemes.nightlightColors[colorKey]!;
-            final isSelected = selectedColor == colorKey;
+          const SizedBox(height: 20),
 
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedColor = colorKey;
-                });
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: colors,
+          // Boutons d'action
+          Row(
+            children: [
+              if (nightlightProvider.isEnabled)
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      nightlightProvider.deactivate();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Éteindre'),
                   ),
-                  shape: BoxShape.circle,
-                  border: isSelected
-                      ? Border.all(color: Colors.white, width: 3)
-                      : null,
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: Colors.white.withOpacity(0.5),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ]
-                      : null,
                 ),
-                child: isSelected
-                    ? const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 24,
-                      )
-                    : null,
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: 12),
-        // Nom de la couleur sélectionnée
-        Consumer<NightlightProvider>(
-          builder: (context, nightlight, child) {
-            return Center(
-              child: Text(
-                nightlight.getColorName(selectedColor),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: isDarkMode ? Colors.white70 : Colors.black54,
-                  fontWeight: FontWeight.w500,
+              if (nightlightProvider.isEnabled) const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,  // ✅ Corrigé
+                  ),
+                  child: const Text('Fermer'),
                 ),
               ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildIntensityControl(Map<String, Color> colors, bool isDarkMode) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Intensité',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: isDarkMode ? Colors.white : Colors.black,
+            ],
           ),
-        ),
-        const SizedBox(height: 16),
-        SliderTheme(
-          data: SliderTheme.of(context).copyWith(
-            activeTrackColor: colors['primary'],
-            inactiveTrackColor: isDarkMode 
-                ? Colors.white.withOpacity(0.2)
-                : Colors.black.withOpacity(0.2),
-            thumbColor: colors['primary'],
-            overlayColor: colors['primary']!.withOpacity(0.2),
-            trackHeight: 6,
-            thumbShape: const RoundSliderThumbShape(
-              enabledThumbRadius: 12,
-            ),
-          ),
-          child: Slider(
-            value: intensity,
-            min: 1,
-            max: 100,
-            divisions: 99,
-            onChanged: (value) {
-              setState(() {
-                intensity = value;
-              });
-            },
-          ),
-        ),
-        const SizedBox(height: 8),
-        Center(
-          child: Text(
-            '${intensity.round()}%',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: colors['primary'],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionButtons(Map<String, Color> colors, bool isDarkMode) {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: () => Navigator.pop(context),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: isDarkMode ? Colors.white70 : Colors.black54,
-              side: BorderSide(
-                color: isDarkMode 
-                    ? Colors.white.withOpacity(0.3)
-                    : Colors.black.withOpacity(0.3),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: const Text('Annuler'),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: _applySettings,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: colors['primary'],
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: const Text('Appliquer'),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _applySettings() {
-    final nightlightProvider = Provider.of<NightlightProvider>(context, listen: false);
-    
-    nightlightProvider.updateSettings(
-      color: selectedColor,
-      intensity: intensity.round(),
-      enabled: true,
-    );
-
-    Navigator.pop(context);
-
-    // Afficher confirmation
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Veilleuse: ${nightlightProvider.getColorName(selectedColor)} à ${intensity.round()}%',
-        ),
-        backgroundColor: Provider.of<SettingsProvider>(context, listen: false).currentColors['primary'],
+        ],
       ),
     );
+  }
+
+  void _showTimePicker(BuildContext context, NightlightProvider provider) async {
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (time != null) {
+      final now = DateTime.now();
+      final scheduledDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        time.hour,
+        time.minute,
+      );
+
+      // Si l'heure est déjà passée aujourd'hui, programmer pour demain
+      final finalDateTime = scheduledDateTime.isBefore(now)
+          ? scheduledDateTime.add(const Duration(days: 1))
+          : scheduledDateTime;
+
+      await provider.scheduleOff(finalDateTime);
+      setState(() {
+        _scheduledOff = finalDateTime;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Extinction programmée à ${time.format(context)}',
+            ),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    }
   }
 }

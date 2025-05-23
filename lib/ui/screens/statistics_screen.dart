@@ -6,6 +6,7 @@ import 'package:fl_chart/fl_chart.dart';
 import '../../providers/sensor_provider.dart';
 import '../theme/app_colors.dart';
 
+
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({Key? key}) : super(key: key);
 

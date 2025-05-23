@@ -6,10 +6,10 @@ import '../../providers/sensor_provider.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/ai_analysis_provider.dart';
-import '../../providers/intercom_provider.dart';
-import 'home_screen.dart';
+import '../../providers/nightlight_provider.dart';  // ✅ Ajouté
+import 'home_screen_modern.dart';
 import 'onboarding_screen.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_colors.dart';  // ✅ Import corrigé
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -55,9 +55,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     final aiAnalysisProvider = Provider.of<AIAnalysisProvider>(context, listen: false);
     aiAnalysisProvider.initialize(settingsProvider.baseUrl);
     
-    // Initialisation de l'interphone
-    final intercomProvider = Provider.of<IntercomProvider>(context, listen: false);
-    intercomProvider.initialize(settingsProvider.cameraIp, int.parse(settingsProvider.apiPort));
+    // ✅ Initialisation du NightlightProvider ajoutée
+    final nightlightProvider = Provider.of<NightlightProvider>(context, listen: false);
+    nightlightProvider.initialize(settingsProvider.baseUrl);
     
     // Attendre un peu pour montrer le splash screen
     await Future.delayed(const Duration(seconds: 3));
@@ -70,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         );
       } else {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => const HomeScreenModern()),
         );
       }
     }
@@ -90,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           gradient: LinearGradient(
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
-            colors: [AppColors.primary, AppColors.primaryVariant],
+            colors: [AppColors.primary, AppColors.primaryVariant],  // ✅ Corrigé
           ),
         ),
         child: Center(
@@ -114,10 +114,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.baby_changing_station,
                     size: 80,
-                    color: AppColors.primary,
+                    color: AppColors.primary,  // ✅ Corrigé
                   ),
                 ),
                 const SizedBox(height: 40),
