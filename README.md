@@ -1,306 +1,217 @@
-# BABYCAM — Intelligent Video Surveillance System
+# 👶 BABYCAM - Smart Baby Monitor with AI
 
-> **Embedded computer vision system with edge AI processing**  
-> **6-month R&D project at Medivietech (MedTech Startup)**
+> **Exploration R&D complète** d'une caméra intelligente pour surveillance de bébés avec IA embarquée  
+> *Projet mené durant mon stage chez Medivietech (avril-octobre 2025)*
 
-[![Engineering](https://img.shields.io/badge/Engineering-Embedded%20Vision-blue)](#)
-[![Stack](https://img.shields.io/badge/Stack-OpenCV%20%7C%20Flutter%20%7C%20IoT-green)](#)
-[![Status](https://img.shields.io/badge/Status-Confidential%20Portfolio-yellow)](#)
+[![ESP32-P4](https://img.shields.io/badge/ESP32--P4-RISC--V-blue)](https://www.espressif.com/en/products/socs/esp32-p4)
+[![Flutter](https://img.shields.io/badge/Flutter-Mobile-02569B?logo=flutter)](https://flutter.dev/)
+[![MIPI CSI-2](https://img.shields.io/badge/MIPI_CSI--2-Camera-green)](https://www.mipi.org/)
+[![Status](https://img.shields.io/badge/Status-Prototype_Validated-orange)](https://github.com/tomhyg/BABYCAM)
 
----
-
-## 📖 Documentation
-
-- **[📐 System Architecture](docs/architecture.md)** — High-level design overview
-- **[🔧 Technical Challenges](docs/challenges.md)** — Key engineering problems solved  
-- **[🚀 Development Approach](docs/development.md)** — Multi-platform methodology
+![BABYCAM App](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/babycam_app.jpg)
 
 ---
 
-## 📸 Project Overview
+## 🎯 Le Concept
 
-![BABYCAM System](images/system/babycam-overview.jpg)
-*Intelligent surveillance system with embedded computer vision*
+Un système de surveillance intelligent pour parents, combinant :
+- 📹 **Caméra HD** avec vision nocturne automatique
+- 🧠 **IA embarquée** pour détection des pleurs et mouvements
+- 🌡️ **Monitoring environnemental** (température, humidité, qualité de l'air)
+- 📱 **Application mobile** temps réel (iOS & Android)
+- 🔋 **Optimisé pour l'autonomie** et la performance
 
----
-
-## 🎯 What is BABYCAM?
-
-BABYCAM is an **intelligent video surveillance system** designed with embedded computer vision capabilities. Unlike cloud-dependent solutions, BABYCAM processes video streams locally using edge computing, ensuring:
-
-- **Privacy-first approach** (on-device processing)
-- **Low latency** (real-time analysis without cloud roundtrip)
-- **Reduced bandwidth** (smart compression & ROI transmission)
-- **Offline capability** (operates without internet connectivity)
-
-**My role:** Complete system development from platform evaluation to multi-platform prototyping and mobile application integration.
+**Objectif** : Créer une solution complète à prix accessible (60-80€) avec des fonctionnalités premium.
 
 ---
 
-## 🔬 Technical Highlights
+## 🚀 Approche & Méthodologie
 
-### Computer Vision & Image Processing
-- ✅ **Real-time motion detection** with adaptive algorithms
-- ✅ **Region of Interest (ROI) analysis** for computational efficiency
-- ✅ **Multi-frame noise reduction** for improved image quality
-- ✅ **Intelligent compression** for bandwidth optimization
-- ✅ **Night mode support** with infrared processing capabilities
-
-### Embedded Systems Development
-- ✅ **Embedded Linux systems** (custom kernel compilation, GCC toolchains)
-- ✅ **Cross-compilation** with ARM GCC toolchains
-- ✅ **Multi-platform prototyping** (comparative hardware evaluation)
-- ✅ **Resource-constrained optimization** (memory, CPU, power)
-- ✅ **Edge AI exploration** (on-device machine learning)
-- ✅ **Real-time OS concepts** (deterministic task scheduling)
-- ✅ **Power management** strategies for battery-operated scenarios
-
-### IoT Architecture
-- ✅ **Dual connectivity** (WiFi + Bluetooth LE)
-- ✅ **MQTT protocol** implementation for IoT messaging
-- ✅ **Mobile application integration** (Flutter/Dart)
-- ✅ **Cloud synchronization** capabilities (optional)
-- ✅ **Low-power wireless** communication protocols
-
-### Mobile Application Development
-- ✅ **Cross-platform app** (Flutter framework)
-- ✅ **Real-time video streaming** interface
-- ✅ **Smart notification system** with configurable alerts
-- ✅ **Historical data visualization**
-- ✅ **User-friendly UI/UX** design
-
----
-
-## 💡 Engineering Approach
-
-### Multi-Platform Evaluation Methodology
-
-The project followed an **iterative comparative approach** across different hardware platforms to optimize the cost/performance/power consumption trade-off:
+### 6 Phases d'Exploration Technique
 
 ```
-Rapid Prototyping → Algorithm Development → Cost Optimization → Production Readiness
-   (Platform A)        (Platform B)           (Platform C)         (Platform D)
+Phase 1  →  Validation concept (ESP32-CAM)
+Phase 2  →  Architecture de référence (Raspberry Pi 4)
+Phase 3  →  Exploration low-cost (Allwinner V3S) ❌
+Phase 4  →  Solution finale (ESP32-P4) ✅
+Phase 5  →  Extension écosystème connecté
+Phase 6  →  Prototypage PCB
 ```
 
-**Evaluation Criteria:**
-- Processing performance (FPS, latency)
-- Power consumption (battery life estimation)
-- Bill of Materials (BOM) cost analysis
-- Ecosystem maturity (libraries, support)
-- Certification pathway (regulatory compliance)
-
-### Key Design Decisions
-
-| Aspect | Approach | Rationale |
-|--------|----------|-----------|
-| **Processing** | Edge computing | Privacy, latency, bandwidth reduction |
-| **Connectivity** | Dual-mode (WiFi/BLE) | Flexibility for different use cases |
-| **Storage** | Local + optional cloud | Offline capability + backup |
-| **Platform** | Multi-platform eval | Optimize cost/performance/power |
-| **UI Framework** | Flutter (Dart) | Cross-platform mobile development |
+**Pivot stratégique** : Passage de DVP (interface parallèle limitée) vers **MIPI CSI-2** (haute performance) après analyse comparative.
 
 ---
 
-## 🛠️ Technical Capabilities Demonstrated
+## 🛠️ Stack Technique
 
-### Computer Vision Skills
-- OpenCV library mastery (C++/Python)
-- Image processing pipeline design
-- Motion detection algorithms
-- Video compression techniques
-- ROI-based processing optimization
+### Hardware
+- **Microcontrôleur** : ESP32-P4 (Dual RISC-V @ 400MHz, 64MB PSRAM)
+- **Caméra** : OV5647 5MP avec filtre IR-Cut automatique
+- **Capteurs** : BME688 (T°/H/Air), VEML7700 (luminosité), BMI270 (mouvement)
+- **Audio** : Microphone MEMS I2S + Amplificateur classe D
 
-### Embedded Development
-- Embedded Linux systems (kernel customization, device drivers)
-- Cross-compilation toolchains (ARM GCC, build systems)
-- Multi-architecture firmware development
-- Resource optimization for constrained systems
-- Memory management strategies
-- Real-time performance optimization
-- Power consumption profiling
+### Software
+- **Firmware** : ESP-IDF (C natif optimisé, 1000+ lignes)
+- **Pipeline vidéo** : ISP Hardware → YUV422 → H.264 (compression matérielle)
+- **Application mobile** : Flutter (iOS + Android)
+- **Backend** : Python sur Raspberry Pi (phase prototype)
 
-### System Architecture
-- End-to-end IoT system design
-- Client-server communication protocols
-- Mobile-embedded integration
-- Security considerations (encryption, authentication)
-- Scalability planning
+### Architecture Pipeline Vidéo
 
-### Software Development
-- Flutter/Dart mobile development
-- Cross-platform application design
-- RESTful API design
-- Bluetooth LE protocol implementation
-- Version control & documentation
+![Pipeline Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/pipeline_architecture.png)
 
 ---
 
-## 📊 Key Achievements
+## ✨ Fonctionnalités Développées
 
-### Technical Milestones
-- ✅ **Functional prototypes** on multiple hardware platforms
-- ✅ **Real-time video processing** at acceptable frame rates
-- ✅ **Mobile application** with live streaming capability
-- ✅ **Smart alert system** with low false-positive rate
-- ✅ **Power-optimized modes** for extended battery operation
+### 📱 Application Mobile
 
-### Engineering Insights
-- ✅ **Platform comparison methodology** for hardware selection
-- ✅ **Algorithm optimization** for embedded constraints
-- ✅ **Trade-off analysis** (cost vs performance vs power)
-- ✅ **Production readiness** evaluation framework
-- ✅ **Regulatory pathway** understanding (CE marking considerations)
+✅ **Streaming temps réel** 1080p @ 30 FPS (latence <200ms)  
+✅ **Détection IA des pleurs** avec classification  
+✅ **Surveillance environnementale** (4 capteurs)  
+✅ **Contrôles à distance** (veilleuse, berceuses)  
+✅ **Historique & statistiques**  
+✅ **Mode sombre** pour usage nocturne  
 
----
+### 🎥 Système Caméra
 
-## 🚀 Project Evolution
+✅ **Vision nocturne** automatique (IR-Cut Filter)  
+✅ **Résolution** : VGA → 1080p selon plateforme  
+✅ **Compression H.264** matérielle (ratio 8:1)  
+✅ **Multi-buffering** pour streaming fluide  
+✅ **Angle de vue** : 130° (couverture chambre complète)  
 
-### Development Phases
-
-**Phase 1: Concept Validation**
-- Quick prototyping on low-cost platform
-- Proof-of-concept for core features
-- Early algorithm development
-
-**Phase 2: Performance Optimization**
-- Migration to higher-performance platform
-- Advanced computer vision algorithms
-- Machine learning exploration
-
-**Phase 3: Cost Reduction**
-- Evaluation of cost-optimized platforms
-- BOM cost analysis
-- Power consumption profiling
-
-**Phase 4: Production Preparation**
-- Industrial-grade platform evaluation
-- Certification pathway planning
-- Firmware architecture finalization
+![Prototype Physique](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/prototype_hardware.jpg)
 
 ---
 
-## 📂 Repository Structure
+## 🏆 Résultats & Performances
 
-```
-BABYCAM/
-├── README.md                      # Portfolio presentation (this file)
-├── LICENSE.md                     # Confidentiality notice
-├── docs/                          # Technical documentation
-│   ├── architecture.md            # System architecture overview
-│   ├── challenges.md              # Technical challenges solved
-│   └── development.md             # Multi-platform methodology
-└── images/                        # Visual documentation
-    ├── system/                    # System photos
-    ├── prototypes/                # Hardware prototypes
-    └── ui/                        # Mobile app screenshots
-```
+### ESP32-P4 (Solution Retenue)
 
-**Note:** Source code, detailed schematics, and proprietary algorithms remain confidential per Medivietech company policy. Documentation provides high-level technical context for portfolio purposes.
+| Métrique | Performance |
+|----------|-------------|
+| **Résolution** | 720p @ 60 FPS / 1080p @ 30 FPS |
+| **Streaming** | 1.5 Mbps stable |
+| **Mémoire** | 64 MB PSRAM (vs 520KB ESP32 classique) |
+| **Compression** | H.264 hardware (500KB/frame) |
+| **Connectivité** | WiFi 6 + Bluetooth 5.3 |
 
----
+### Validation Technique
 
-## 🎓 Skills Demonstrated
-
-### Technical Competencies
-- **Computer Vision**: OpenCV, image processing, motion detection
-- **Embedded Systems**: Multi-platform firmware, RTOS concepts, optimization
-- **IoT Architecture**: WiFi, BLE, MQTT, edge computing
-- **Mobile Development**: Flutter/Dart, cross-platform apps
-- **Hardware Evaluation**: Comparative analysis, BOM costing, power profiling
-
-### Professional Skills
-- **R&D Methodology**: Platform comparison, trade-off analysis
-- **Problem-Solving**: Algorithm optimization for constrained resources
-- **Documentation**: Technical writing for diverse audiences
-- **Project Management**: Multi-phase development planning
-- **Cost Engineering**: BOM analysis, production feasibility assessment
+✅ **Tous les capteurs intégrés et fonctionnels**  
+✅ **Application mobile complète testée**  
+✅ **Pipeline vidéo optimisé et stable**  
+✅ **Architecture industrialisable** (SoC commercialement disponible)  
 
 ---
 
-## 🔧 Technologies Used
+## 🎓 Compétences Démontrées
 
-**Computer Vision:**
-- OpenCV (C++/Python)
-- Image processing algorithms
-- Video compression codecs
+### Techniques
+- **Systèmes embarqués** : ESP-IDF, RTOS, gestion mémoire critique
+- **Traitement d'image** : Pipeline ISP, compression vidéo, multi-buffering
+- **IoT** : Communication temps réel, capteurs I2C/I2S, protocoles WiFi/BLE
+- **Mobile** : Flutter, architecture client-serveur, UI/UX responsive
 
-**Embedded Platforms:**
-- Various ARM-based SoCs (comparative evaluation)
-- Embedded Linux systems (custom builds, kernel compilation)
-- Cross-compilation toolchains (ARM GCC)
-- Real-time processing frameworks
-
-**Connectivity:**
-- WiFi 802.11n
-- Bluetooth LE 5.0+
-- MQTT messaging protocol
-
-**Mobile Development:**
-- Flutter/Dart framework
-- Real-time video streaming libraries
-- Cross-platform UI components
-
-**Development Tools:**
-- VS Code, Platform-specific IDEs
-- Git version control
-- Performance profiling tools
+### Méthodologiques
+- **Approche itérative** : Validation progressive par phases
+- **Analyse comparative** : Benchmark de 4 plateformes (ESP32-CAM, Pi4, V3S, ESP32-P4)
+- **Gestion de l'échec** : Pivot stratégique après blocage technique (V3S)
+- **Vision produit** : Architecture écosystème complet (caméra + bracelet + hub)
 
 ---
 
-## 📄 License & Confidentiality
+## 📊 Positionnement Commercial
 
-This repository showcases my engineering work during my internship at **Medivietech** (AGORANOV Paris).  
-Intellectual property belongs to Medivietech.
+### Écosystème Complet Développé
 
-**✅ Authorized:** Portfolio review for recruitment/freelance evaluation  
-**❌ Not Authorized:** Commercial use, code reproduction, derivative products  
+| Gamme | Prix | Contenu |
+|-------|------|---------|
+| **Essentiel** | 279€ | Bracelet physiologique + Veilleuse + Hub |
+| **Surveillance** | 359€ | Caméra HD + Hub |
+| **Premium** | 499€ | Solution complète intégrée |
 
-For commercial inquiries: [contact@medivietech.com](mailto:contact@medivietech.com)
+**Concurrence** : Eufy (299€) + Owlet (399€) = 700€ séparément  
+**BABYCAM Premium** : 499€ avec intégration native
 
 ---
 
-## 👤 About Me
+## 🚧 Décision Stratégique
+
+**Projet arrêté après Phase 6** pour prioriser Pulsar (monitoring physiologique hospitalier).
+
+### Raisons
+- ✅ Validation technique complète réussie
+- ✅ Application fonctionnelle démontrée
+- ⚠️ Ressources R&D mobilisées sur Pulsar (priorité stratégique)
+- ⚠️ Investissement industrialisation > moyens startup
+- ⚠️ Délais certification (CE, cybersécurité IoT)
+
+### Patrimoine Réutilisable
+- 1000+ lignes code ESP-IDF optimisé
+- Application Flutter complète
+- PCB hub parental (conception avancée)
+- Architecture pipeline H.264
+- Benchmark composants exhaustif
+
+---
+
+## 💡 Apprentissages Clés
+
+> **"Le coût attractif d'un SoC (6$) est trompeur sans écosystème mature"**  
+> → Échec constructif sur Allwinner V3S (documentation obsolète, communauté inexistante)
+
+> **"L'importance de savoir arrêter au bon moment"**  
+> → Décision rationnelle de prioriser Pulsar basée sur analyse ressources vs opportunités
+
+> **"Validation progressive > développement monolithique"**  
+> → Approche en 6 phases permettant pivots rapides et décisions éclairées
+
+---
+
+## 📸 Galerie
+
+### Application Mobile
+![App Demo](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/babycam_app.jpg)
+
+### Prototype Hardware
+![Hardware Prototype](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/prototype_hardware.jpg)
+
+### Architecture Technique
+![Technical Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/pipeline_architecture.png)
+
+---
+
+## 🔗 Projet Connexe
+
+🏥 **[PULSAR](https://github.com/tomhyg/PULSAR)** - Montre physiologique médicale (projet principal)  
+→ 50% du temps de stage, 15 prototypes produits, validation clinique sur 50 patients
+
+---
+
+## 📄 Contexte
+
+**Stage de fin d'études** - Medivietech (6 mois)  
+**Période** : Avril - Octobre 2025  
+**Rôle** : Ingénieur Hardware/Software Embarqué  
+**Statut** : Prototype R&D validé techniquement, arrêt stratégique pour priorisation ressources
+
+---
+
+## 📬 Contact
 
 **Tom HUYGHE**  
-*Mechatronics Engineer | Embedded Systems Specialist | Computer Vision Developer*
-
-🎓 **ESME SUDRIA** — Engineering Degree (Mechatronics & Embedded Systems)  
-🏢 **Currently:** Freelance embedded consultant + Open to full-time opportunities  
-💼 **Interests:** Computer Vision, IoT, Embedded AI, Edge Computing  
-
-### 📬 Contact
-
-📧 **Email:** [your.email@example.com]  
-💼 **LinkedIn:** [Your LinkedIn Profile]  
-🌐 **Portfolio:** [Your Website]  
-💰 **Freelance Rate:** 350€/day  
-
-### 💡 Core Expertise
-- Computer vision (OpenCV, image processing)
-- Embedded Linux (kernel compilation, GCC toolchains, cross-compilation)
-- Embedded firmware (ARM platforms, RTOS)
-- IoT system architecture
-- Mobile development (Flutter/Dart)
-- Hardware platform evaluation
-- Power optimization strategies
+Ingénieur Mécatronique - ESME SUDRIA 2025  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/tom-huyghe)  
+[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-green)](https://github.com/tomhyg)
 
 ---
 
-## 🏢 Professional Context
+<div align="center">
 
-**Company:** [Medivietech](https://www.medivietech.com) (MedTech Startup)  
-**Incubator:** AGORANOV Paris (Leading French Deep-Tech Incubator)  
-**Role:** Hardware/Software Engineering Intern  
-**Duration:** 6 months (April - October 2024)  
-**Team:** CEO (Neil Benhamou), CTO (Thomas Baret - AI/Data)  
+**🌟 Si ce projet vous intéresse, n'hésitez pas à explorer le code et la documentation technique !**
 
----
+*Développé avec passion pour l'innovation MedTech et les systèmes embarqués intelligents*
 
-**⚡ Engineered with passion for embedded intelligence ⚡**
-
-*Bringing computer vision capabilities to resource-constrained embedded systems*
-
----
-
-**Last Updated:** January 2025  
-**Project Status:** ✅ Multi-platform prototypes completed | 🔄 Production platform evaluation ongoing
+</div>
