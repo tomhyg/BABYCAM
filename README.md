@@ -25,19 +25,6 @@ Un système de surveillance intelligent pour parents, combinant :
 
 ---
 
-## 🚀 Approche & Méthodologie
-
-### 6 Phases d'Exploration Technique
-
-```
-Phase 1  →  Validation concept (ESP32-CAM)
-Phase 2  →  Architecture de référence (Raspberry Pi 4)
-Phase 3  →  Exploration low-cost (Allwinner V3S) ❌
-Phase 4  →  Solution finale (ESP32-P4) ✅
-Phase 5  →  Extension écosystème connecté
-Phase 6  →  Prototypage PCB
-```
-
 **Pivot stratégique** : Passage de DVP (interface parallèle limitée) vers **MIPI CSI-2** (haute performance) après analyse comparative.
 
 ---
@@ -47,7 +34,7 @@ Phase 6  →  Prototypage PCB
 ### Hardware
 - **Microcontrôleur** : ESP32-P4 (Dual RISC-V @ 400MHz, 64MB PSRAM)
 - **Caméra** : OV5647 5MP avec filtre IR-Cut automatique
-- **Capteurs** : BME688 (T°/H/Air), VEML7700 (luminosité), BMI270 (mouvement)
+- **Capteurs** :  (T°/H/Air),  (luminosité), (mouvement)
 - **Audio** : Microphone MEMS I2S + Amplificateur classe D
 
 ### Software
@@ -58,7 +45,7 @@ Phase 6  →  Prototypage PCB
 
 ### Architecture Pipeline Vidéo
 
-![Pipeline Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/pipeline_architecture.png)
+![Pipeline Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/images/APP.jpg)
 
 ---
 
@@ -119,55 +106,6 @@ Phase 6  →  Prototypage PCB
 - **Analyse comparative** : Benchmark de 4 plateformes (ESP32-CAM, Pi4, V3S, ESP32-P4)
 - **Gestion de l'échec** : Pivot stratégique après blocage technique (V3S)
 - **Vision produit** : Architecture écosystème complet (caméra + bracelet + hub)
-
----
-
-## 📊 Positionnement Commercial
-
-### Écosystème Complet Développé
-
-| Gamme | Prix | Contenu |
-|-------|------|---------|
-| **Essentiel** | 279€ | Bracelet physiologique + Veilleuse + Hub |
-| **Surveillance** | 359€ | Caméra HD + Hub |
-| **Premium** | 499€ | Solution complète intégrée |
-
-**Concurrence** : Eufy (299€) + Owlet (399€) = 700€ séparément  
-**BABYCAM Premium** : 499€ avec intégration native
-
----
-
-## 🚧 Décision Stratégique
-
-**Projet arrêté après Phase 6** pour prioriser Pulsar (monitoring physiologique hospitalier).
-
-### Raisons
-- ✅ Validation technique complète réussie
-- ✅ Application fonctionnelle démontrée
-- ⚠️ Ressources R&D mobilisées sur Pulsar (priorité stratégique)
-- ⚠️ Investissement industrialisation > moyens startup
-- ⚠️ Délais certification (CE, cybersécurité IoT)
-
-### Patrimoine Réutilisable
-- 1000+ lignes code ESP-IDF optimisé
-- Application Flutter complète
-- PCB hub parental (conception avancée)
-- Architecture pipeline H.264
-- Benchmark composants exhaustif
-
----
-
-## 💡 Apprentissages Clés
-
-> **"Le coût attractif d'un SoC (6$) est trompeur sans écosystème mature"**  
-> → Échec constructif sur Allwinner V3S (documentation obsolète, communauté inexistante)
-
-> **"L'importance de savoir arrêter au bon moment"**  
-> → Décision rationnelle de prioriser Pulsar basée sur analyse ressources vs opportunités
-
-> **"Validation progressive > développement monolithique"**  
-> → Approche en 6 phases permettant pivots rapides et décisions éclairées
-
 ---
 
 ## 📸 Galerie
