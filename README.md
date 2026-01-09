@@ -45,7 +45,7 @@ Un système de surveillance intelligent pour parents, combinant :
 
 ### Architecture Pipeline Vidéo
 
-![Pipeline Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/images/APP.jpg)
+![Pipeline Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/images/APP.png)
 
 ---
 
