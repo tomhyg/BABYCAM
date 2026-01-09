@@ -44,7 +44,7 @@ Un système de surveillance intelligent pour parents, combinant :
 - **Backend** : Python sur Raspberry Pi (phase prototype)
 
 ### Architecture Pipeline Vidéo
-![Pipeline Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/images/APP.png)
+![Pipeline Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/images/architecture.png)
 
 ---
 
@@ -110,13 +110,13 @@ Un système de surveillance intelligent pour parents, combinant :
 ## 📸 Galerie
 
 ### Application Mobile
-![App Demo](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/babycam_app.jpg)
+![App Demo](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/APP.png)
 
 ### Prototype Hardware
-![Hardware Prototype](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/prototype_hardware.jpg)
+![Hardware Prototype](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/camera.png)
 
 ### Architecture Technique
-![Technical Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/pipeline_architecture.png)
+![Technical Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/images/Camera IRCUTFILTER.png)
 
 ---
 
