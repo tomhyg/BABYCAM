@@ -8,7 +8,7 @@
 [![MIPI CSI-2](https://img.shields.io/badge/MIPI_CSI--2-Camera-green)](https://www.mipi.org/)
 [![Status](https://img.shields.io/badge/Status-Prototype_Validated-orange)](https://github.com/tomhyg/BABYCAM)
 
-![BABYCAM App](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/assets/babycam_app.jpg)
+![BABYCAM App](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/mobile_app/assets/images/babycam_logo.png)
 
 ---
 
