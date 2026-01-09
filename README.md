@@ -273,7 +273,6 @@ For commercial inquiries: [contact@medivietech.com](mailto:contact@medivietech.c
 📧 **Email:** [your.email@example.com]  
 💼 **LinkedIn:** [Your LinkedIn Profile]  
 🌐 **Portfolio:** [Your Website]  
-🏢 **SIRET:** 99486587100010  
 💰 **Freelance Rate:** 350€/day  
 
 ### 💡 Core Expertise
