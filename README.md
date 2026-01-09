@@ -110,13 +110,13 @@ Un système de surveillance intelligent pour parents, combinant :
 ## 📸 Galerie
 
 ### Application Mobile
-![App Demo](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/APP.png)
+![App Demo](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/images/APP.png)
 
 ### Prototype Hardware
-![Hardware Prototype](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/camera.png)
+![Hardware Prototype](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/images/camera.png)
 
 ### Architecture Technique
-![Technical Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/images/Camera IRCUTFILTER.png)
+![Technical Architecture](https://raw.githubusercontent.com/tomhyg/BABYCAM/main/images/CameraIRCUTFILTER.png)
 
 ---
 
