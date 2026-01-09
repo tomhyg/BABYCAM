@@ -47,6 +47,8 @@ BABYCAM is an **intelligent video surveillance system** designed with embedded c
 - ✅ **Night mode support** with infrared processing capabilities
 
 ### Embedded Systems Development
+- ✅ **Embedded Linux systems** (custom kernel compilation, GCC toolchains)
+- ✅ **Cross-compilation** with ARM GCC toolchains
 - ✅ **Multi-platform prototyping** (comparative hardware evaluation)
 - ✅ **Resource-constrained optimization** (memory, CPU, power)
 - ✅ **Edge AI exploration** (on-device machine learning)
@@ -109,6 +111,8 @@ Rapid Prototyping → Algorithm Development → Cost Optimization → Production
 - ROI-based processing optimization
 
 ### Embedded Development
+- Embedded Linux systems (kernel customization, device drivers)
+- Cross-compilation toolchains (ARM GCC, build systems)
 - Multi-architecture firmware development
 - Resource optimization for constrained systems
 - Memory management strategies
@@ -222,7 +226,8 @@ BABYCAM/
 
 **Embedded Platforms:**
 - Various ARM-based SoCs (comparative evaluation)
-- Linux embedded systems
+- Embedded Linux systems (custom builds, kernel compilation)
+- Cross-compilation toolchains (ARM GCC)
 - Real-time processing frameworks
 
 **Connectivity:**
@@ -268,10 +273,12 @@ For commercial inquiries: [contact@medivietech.com](mailto:contact@medivietech.c
 📧 **Email:** [your.email@example.com]  
 💼 **LinkedIn:** [Your LinkedIn Profile]  
 🌐 **Portfolio:** [Your Website]  
+🏢 **SIRET:** 99486587100010  
 💰 **Freelance Rate:** 350€/day  
 
 ### 💡 Core Expertise
 - Computer vision (OpenCV, image processing)
+- Embedded Linux (kernel compilation, GCC toolchains, cross-compilation)
 - Embedded firmware (ARM platforms, RTOS)
 - IoT system architecture
 - Mobile development (Flutter/Dart)
